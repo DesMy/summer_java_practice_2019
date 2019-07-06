@@ -142,13 +142,7 @@ public class ControllerTest {
     }
     
     @org.junit.Test
-    public void testProcessFFWithBFS() throws IOException{        
-        LinkedList<Graph> result = FordFulkerson.process(graph, new BFS());
-        assertEquals(8, graph.getTotalFlow()); 
-    }
-    
-    @org.junit.Test
-    public void testProcessFFWithDFS(){        
+    public void testProcess(){        
         LinkedList<Graph> result = FordFulkerson.process(graph, new DFS());
         assertEquals(8, graph.getTotalFlow());
     }
