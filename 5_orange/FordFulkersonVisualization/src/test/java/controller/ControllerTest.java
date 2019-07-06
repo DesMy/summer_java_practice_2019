@@ -7,19 +7,26 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Random;
+import model.BFS;
+import model.DFS;
+import model.FordFulkerson;
+import model.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import ui.VertexNotFoundException;
 
 /**
  *
  * @author duyenNH
  */
 public class ControllerTest {
+    private Graph graph;
     
     public ControllerTest() {
     }
@@ -34,6 +41,26 @@ public class ControllerTest {
     
     @Before
     public void setUp() {
+       graph = new Graph();
+        
+        graph.addVertex("A");
+        graph.addVertex("B");
+        graph.addVertex("C");
+        graph.addVertex("D");
+        graph.addVertex("E");
+        graph.addVertex("F");
+        
+        graph.addEdge(graph.getVertexByName("A"), graph.getVertexByName("B"), 8);
+        graph.addEdge(graph.getVertexByName("A"), graph.getVertexByName("C"), 2);
+        graph.addEdge(graph.getVertexByName("B"), graph.getVertexByName("D"), 6);
+        graph.addEdge(graph.getVertexByName("C"), graph.getVertexByName("E"), 5);
+        graph.addEdge(graph.getVertexByName("D"), graph.getVertexByName("C"), 2);
+        graph.addEdge(graph.getVertexByName("E"), graph.getVertexByName("B"), 3);
+        graph.addEdge(graph.getVertexByName("D"), graph.getVertexByName("F"), 4);
+        graph.addEdge(graph.getVertexByName("E"), graph.getVertexByName("F"), 5);
+        
+        graph.setSource(graph.getVertexByName("A"));
+        graph.setSink(graph.getVertexByName("F"));       
     }
     
     @After
@@ -41,42 +68,68 @@ public class ControllerTest {
     }
 
     @org.junit.Test
+    public void testAddVertex(){
+        assertEquals(6, graph.getVrtx().size());
+        
+        graph.addVertex("G");
+        
+        assertEquals(7, graph.getVrtx().size());
+        assertEquals("G", graph.getVrtx().get(6).getName());
+    }
+    
+    @org.junit.Test
+    public void testAddEdges(){
+        assertEquals(8, graph.getEdges().size());
+        
+        graph.addEdge(graph.getVertexByName("C"), graph.getVertexByName("F"), 3);
+                
+        assertEquals(4, graph.getVrtx().get(2).getNeighbours().size());
+        assertEquals(9, graph.getEdges().size());
+    }
+    @org.junit.Test
+    public void testVertexNotFoundException() throws VertexNotFoundException{
+        boolean thrown = false;
+
+        try {
+          graph.deleteVertex(graph.getVertexByName("S"));
+        } catch (VertexNotFoundException e) {
+          thrown = true;
+        }
+        
+        assertTrue(thrown); 
+    }
+    
+    @org.junit.Test
+    public void testDeleteVertex() throws VertexNotFoundException{
+        graph.deleteVertex(graph.getVertexByName("C"));
+        assertEquals(5, graph.getVrtx().size());
+    }
+    
+    @org.junit.Test
+    public void testDeleteEdge() throws VertexNotFoundException{
+        graph.deleteEdge(graph.getVertexByName("B"), graph.getVertexByName("D"));
+        assertEquals(7, graph.getEdges().size());        
+    }
+    
+    @org.junit.Test
     public void testInputFile() throws IOException {
-        Controller c = new Controller(); 
+        Controller c = new Controller();
 
         // TODO review the generated test code and remove the default call to fail.
         
         c.loadFile("file.txt");
         
         assertEquals(3, c.graph.getVrtx().size());
-        //assertEquals(2, c.graph.getEdges().size());
+        assertEquals(2, c.graph.getEdges().size());
         assertEquals(2, c.graph.getVrtx().get(1).getNeighbours().size());
         assertEquals("A", c.graph.getSource().getName());
         assertEquals("C", c.graph.getSink().getName());
-        //fail("The test case is a prototype.");
     }    
       
     @org.junit.Test
     public void testIOFile() throws IOException{
         Controller c = new Controller(); 
-        c.graph.addVertex("A");
-        c.graph.addVertex("B");
-        c.graph.addVertex("C");
-        c.graph.addVertex("D");
-        c.graph.addVertex("E");
-        c.graph.addVertex("F");
-        
-        c.graph.addEdge(c.graph.getVertexByName("A"), c.graph.getVertexByName("B"), 8);
-        c.graph.addEdge(c.graph.getVertexByName("A"), c.graph.getVertexByName("C"), 2);
-        c.graph.addEdge(c.graph.getVertexByName("B"), c.graph.getVertexByName("D"), 6);
-        c.graph.addEdge(c.graph.getVertexByName("C"), c.graph.getVertexByName("E"), 5);
-        c.graph.addEdge(c.graph.getVertexByName("D"), c.graph.getVertexByName("C"), 2);
-        c.graph.addEdge(c.graph.getVertexByName("E"), c.graph.getVertexByName("B"), 3);
-        c.graph.addEdge(c.graph.getVertexByName("D"), c.graph.getVertexByName("F"), 4);
-        c.graph.addEdge(c.graph.getVertexByName("E"), c.graph.getVertexByName("F"), 5);
-        
-        c.graph.setSource(c.graph.getVertexByName("A"));
-        c.graph.setSink(c.graph.getVertexByName("F"));
+        c.graph = graph;
         
         c.saveFile("test2.txt");
         
@@ -86,57 +139,17 @@ public class ControllerTest {
         assertEquals(6, c.graph.getVrtx().size());   
         assertEquals(8, c.graph.getEdges().size());
         assertEquals("F", c.graph.getVrtx().get(5).getName());
-                
-        //fail("The test case is a prototype.");
-    }
-    @org.junit.Test(timeout=1000)
-    public void testProcess1() throws IOException{
-        Controller c = new Controller(); 
-        
-        // TODO review the generated test code and remove the default call to fail.
-        c.loadFile("test1.txt");
-        assertEquals(4, c.graph.getVrtx().size());   
-        assertEquals(6, c.graph.getEdges().size());
-        assertEquals("C", c.graph.getVrtx().get(2).getName());
-        
-        c.process();
-        assertEquals(2, c.graph.getTotalFlow()); 
-        
-        //fail("The test case is a prototype.");
     }
     
-    @org.junit.Test(timeout=1000)
-    public void testProcess2() throws IOException{
-        Controller c = new Controller(); 
-        c.graph.addVertex("A");
-        c.graph.addVertex("B");
-        c.graph.addVertex("C");
-        c.graph.addVertex("D");
-        c.graph.addVertex("E");
-        c.graph.addVertex("F");
-        
-        c.graph.addEdge(c.graph.getVertexByName("A"), c.graph.getVertexByName("B"), 8);
-        c.graph.addEdge(c.graph.getVertexByName("A"), c.graph.getVertexByName("C"), 2);
-        c.graph.addEdge(c.graph.getVertexByName("B"), c.graph.getVertexByName("D"), 6);
-        c.graph.addEdge(c.graph.getVertexByName("C"), c.graph.getVertexByName("E"), 5);
-        c.graph.addEdge(c.graph.getVertexByName("D"), c.graph.getVertexByName("C"), 2);
-        c.graph.addEdge(c.graph.getVertexByName("E"), c.graph.getVertexByName("B"), 3);
-        c.graph.addEdge(c.graph.getVertexByName("D"), c.graph.getVertexByName("F"), 4);
-        c.graph.addEdge(c.graph.getVertexByName("E"), c.graph.getVertexByName("F"), 5);
-        
-        c.graph.setSource(c.graph.getVertexByName("A"));
-        c.graph.setSink(c.graph.getVertexByName("F"));
-        
-        // TODO review the generated test code and remove the default call to fail.
-        
-        assertEquals(6, c.graph.getVrtx().size());   
-        assertEquals(8, c.graph.getEdges().size());
-        assertEquals("F", c.graph.getVrtx().get(5).getName());
-        
-        c.process();
-        assertEquals(8, c.graph.getTotalFlow());
-                
-        //fail("The test case is a prototype.");
+    @org.junit.Test
+    public void testProcessFFWithBFS() throws IOException{        
+        LinkedList<Graph> result = FordFulkerson.process(graph, new BFS());
+        assertEquals(8, graph.getTotalFlow()); 
     }
     
+    @org.junit.Test
+    public void testProcessFFWithDFS(){        
+        LinkedList<Graph> result = FordFulkerson.process(graph, new DFS());
+        assertEquals(8, graph.getTotalFlow());
+    }
 }
