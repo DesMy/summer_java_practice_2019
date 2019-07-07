@@ -1,7 +1,7 @@
+package com.practice.blueTeam.UI;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -10,19 +10,26 @@ public class LevelWindow extends JFrame {
     private JButton closeButton = new JButton("Close");
     private JButton randomButton = new JButton("Random");
     private JButton buildButton = new JButton("Show Solution");
+    private JButton nextButton = new JButton("Next");
     public LevelWindow() {
         super("Пятнашки");
-        setSize(600,500);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        int sizeWidth = 800;
+        int sizeHeight = 700;
+        int locationX = (screenSize.width - sizeWidth) / 2;
+        int locationY = (screenSize.height - sizeHeight) / 2;
+        this.setBounds(locationX, locationY, sizeWidth, sizeHeight);
         JPanel mainPanel = new JPanel();
         JPanel tilesPanel = new JPanel();
         this.setContentPane(mainPanel);
         mainPanel.setLayout(null);
         mainPanel.setSize(this.getSize());
-        tilesPanel.setLayout(new GridLayout(4,4,10,10));
+        tilesPanel.setLayout(new GridLayout(4,4,5,5));
         tilesPanel.setLocation(mainPanel.getWidth()/16,mainPanel.getHeight()/6 );
-        tilesPanel.setSize(270, 270);
+        tilesPanel.setSize(400, 400);
         for (int i = 0; i < 16; i++)
         {
             tilesPanel.add(new JButton(Integer.toString(i)));
@@ -36,8 +43,7 @@ public class LevelWindow extends JFrame {
         buttonsPanel.setLayout(new GridLayout(4,1,10,10));
         buttonsPanel.add(randomButton);
         buttonsPanel.add(buildButton);
-        buttonsPanel.add(new JButton("1"));
-        buttonsPanel.getComponents()[buttonsPanel.getComponents().length - 1].setVisible(false);
+        buttonsPanel.add(nextButton);
         buttonsPanel.add(closeButton);
         mainPanel.add(buttonsPanel);
         closeButton.addMouseListener(new MouseAdapter() {
@@ -49,18 +55,3 @@ public class LevelWindow extends JFrame {
 
     }
 }
-
-/*
-class MyBtn extends JButton implements ActionListener {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-    }
-}*/

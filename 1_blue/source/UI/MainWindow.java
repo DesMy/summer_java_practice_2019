@@ -1,10 +1,12 @@
+package com.practice.blueTeam.UI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
-class MainWindow extends  JFrame {
+public class MainWindow extends  JFrame {
     private static LevelSelectWindow selectWindow = LevelSelectWindow.getSelectWindow();
     private static MainWindow ui = null;
     private JButton newGame = new JButton("New Game");
@@ -27,9 +29,14 @@ class MainWindow extends  JFrame {
 
     private MainWindow() {
         super("Пятнашки");
-        this.setSize(300,400);
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int sizeWidth = 800;
+        int sizeHeight = 600;
+        int locationX = (screenSize.width - sizeWidth) / 2;
+        int locationY = (screenSize.height - sizeHeight) / 2;
+        this.setBounds(locationX, locationY, sizeWidth, sizeHeight);
         newGame.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
