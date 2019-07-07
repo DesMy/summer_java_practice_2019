@@ -57,6 +57,9 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[50, 50]"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
@@ -78,33 +81,24 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="drawingPanel" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="339" max="-2" attributes="0"/>
-          </Group>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="486" max="32767" attributes="0"/>
-                  <Component id="panelRun" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="panelRun" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="drawingPanel" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="panelRun" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="25" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="panelRun" max="32767" attributes="0"/>
+                  <Component id="drawingPanel" max="32767" attributes="0"/>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -122,12 +116,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="445" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="594" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="671" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="461" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -140,10 +134,15 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="lblRunStatus" min="-2" pref="290" max="-2" attributes="0"/>
-                      <Component id="btnRun" max="32767" attributes="0"/>
-                      <Component id="panelStepNav" alignment="0" max="32767" attributes="0"/>
+                      <Component id="lblRunStatus" max="32767" attributes="0"/>
+                      <Component id="btnClear" alignment="1" max="32767" attributes="0"/>
+                      <Component id="btnRun" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="panelStepNav" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -151,26 +150,27 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="btnClear" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnRun" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="lblRunStatus" min="-2" pref="45" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="panelStepNav" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="525" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="btnRun">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRunActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JLabel" name="lblRunStatus">
           <Properties>
             <Property name="text" type="java.lang.String" value="Run Status"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnClear">
+        </Component>
+        <Component class="javax.swing.JButton" name="btnRun">
         </Component>
         <Container class="javax.swing.JPanel" name="panelStepNav">
 
@@ -181,10 +181,9 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnPrevStep" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lblStep" max="32767" attributes="0"/>
+                      <Component id="lblStep" pref="110" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnNextStep" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnNextStep" min="-2" pref="71" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

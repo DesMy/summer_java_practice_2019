@@ -145,7 +145,7 @@ public class GraphDisplayFrame extends JPanel implements VertexActionListener {
     
     public GraphEdge hasEdgeAt(int x, int y) {
         for (GraphEdge e : uiEMapping.values()) {
-            if (Line2D.ptSegDist(e.getV1().getX() + GraphElement.radius, e.getV1().getY() + GraphElement.radius, e.getV2().getX() + GraphElement.radius, e.getV2().getY() + GraphElement.radius, x, y) < 15) {
+            if (Line2D.ptSegDist(e.getV1().getX() + GraphElement.radius, e.getV1().getY() + GraphElement.radius, e.getV2().getX() + GraphElement.radius, e.getV2().getY() + GraphElement.radius, x, y) < 7) {
                 return e;
             }
         }

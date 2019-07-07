@@ -6,6 +6,8 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -14,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.font.TextAttribute;
 import java.util.LinkedList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -101,8 +104,6 @@ public class GraphVertex extends GraphElement {
         addEdgeMI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("selected in graph vertex");
-                System.out.println("number of listener: " + listeners.size());
                 for (VertexActionListener listener : listeners) {
                     listener.onVertexSelected(GraphVertex.this, e);
                 }
@@ -191,8 +192,22 @@ public class GraphVertex extends GraphElement {
         }
         g.fillOval(0, 0, radius * 2, radius * 2);
 
-        g.setColor(Color.black);
-        g.drawString(toString(), radius, radius);
+        g.setColor(Color.darkGray);
+        drawCenteredString(g, toString(), new Rectangle(0, 0, 2*radius, 2*radius), new Font("TimesRoman", Font.BOLD, 16));
+        
+    }
+
+    public void drawCenteredString(Graphics g, String text, Rectangle rect, Font font) {
+        // Get the FontMetrics
+        FontMetrics metrics = g.getFontMetrics(font);
+        // Determine the X coordinate for the text
+        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
+        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        // Set the font
+        g.setFont(font);
+        // Draw the String
+        g.drawString(text, x, y);
     }
 
     @Override

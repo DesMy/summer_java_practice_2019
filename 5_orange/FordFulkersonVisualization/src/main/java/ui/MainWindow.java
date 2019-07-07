@@ -12,6 +12,8 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -30,6 +32,7 @@ import javax.swing.JSeparator;
 import javax.swing.event.MouseInputAdapter;
 import model.DeleteVertexActionResult;
 import model.Edge;
+import model.Graph;
 import model.Vertex;
 
 /**
@@ -62,6 +65,16 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         initContextMenuPanel();
         initContextMenuEdge();
         graphDisplay.init(controller.graph);
+        btnClear.setText("Clear");
+        this.setFocusable(true);
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    deselectVertex();
+                }
+            }
+        });
         graphDisplay.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -103,13 +116,21 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 backToDesign();
             }
         };
+
+        btnClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.graph = new Graph();
+                graphDisplay.init(controller.graph);
+                graphDisplay.repaint();
+            }
+        });
         Setting.getInstance().addSettingChangedListener(this);
         Setting.getInstance().setRunningMode(Setting.MODE_GRAPH_DESIGN);
 
     }
 
     private void deselectVertex() {
-        System.out.println("deselected");
         selected = null;
         graphDisplay.setTempEdge(null);
         repaint();
@@ -118,15 +139,21 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
     @Override
     public void onSettingChanged() {
         if (Setting.getInstance().getRunningMode() == Setting.MODE_ALGORITHM_VISUALIZING) {
-            if (btnRun.getActionListeners().length > 0) {
-                btnRun.removeActionListener(runListener);
+            for (int i = btnRun.getActionListeners().length - 1; i >= 0; i--) {
+                btnRun.removeActionListener(btnRun.getActionListeners()[i]);
             }
+
             btnRun.addActionListener(backToDesignListener);
             btnRun.setText("Back to design mode");
-            for(Component c : panelStepNav.getComponents()) c.setEnabled(true);
+            btnClear.setVisible(false);
+            lblRunStatus.setVisible(true);
+            panelStepNav.setVisible(true);
+//            for (Component c : panelStepNav.getComponents()) {
+//                c.setEnabled(true);
+//            }
         } else if (Setting.getInstance().getRunningMode() == Setting.MODE_GRAPH_DESIGN) {
-            if (btnRun.getActionListeners().length > 0) {
-                btnRun.removeActionListener(backToDesignListener);
+            for (int i = btnRun.getActionListeners().length - 1; i >= 0; i--) {
+                btnRun.removeActionListener(btnRun.getActionListeners()[i]);
             }
             btnRun.addActionListener(runListener);
             btnRun.setText("Run");
@@ -134,7 +161,12 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             controller.graph.initPrevFlow();
             graphDisplay.loadStepGraph(controller.graph);
             graphDisplay.repaint();
-            for(Component c : panelStepNav.getComponents()) c.setEnabled(false);
+            btnClear.setVisible(true);
+            lblRunStatus.setVisible(false);
+            panelStepNav.setVisible(false);
+//            for (Component c : panelStepNav.getComponents()) {
+//                c.setEnabled(false);
+//            }
         }
     }
 
@@ -171,8 +203,6 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                         graphDisplay.deleteEdge(edge);
                     }
                 } catch (VertexNotFoundException ex) {
-                    Logger.getLogger(MainWindow.class
-                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -184,19 +214,21 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         contextMenuPanel = new JPopupMenu();
         JMenuItem addVertexMI = new JMenuItem("Add vertex");
 
-        addVertexMI.addActionListener((ActionEvent e) -> {
-            Point pos = graphDisplay.getMousePosition();
-
-            String content = JOptionPane.showInputDialog("Input vertex name");
-            if (content.length() > 0) {
-                Vertex newV = null;
-                try {
-                    newV = controller.addVertex(content);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage());
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        addVertexMI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Point pos = graphDisplay.getMousePosition();
+                String content = JOptionPane.showInputDialog("Input vertex name");
+                if (content != null && content.length() > 0) {
+                    Vertex newV = null;
+                    try {
+                        newV = controller.addVertex(content);
+                        graphDisplay.addVertex(newV, pos);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(MainWindow.this, ex.getMessage());
+                        //Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                graphDisplay.addVertex(newV, pos);
             }
         });
 
@@ -219,7 +251,6 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
     @Override
     public void onVertexSelected(GraphVertex v, EventObject event) {
         if (event instanceof ActionEvent) {
-            System.out.println("selected1");
             this.selected = v;
             graphDisplay.setTempEdge(new Line2D.Double(v.getX() + GraphElement.radius, v.getY() + GraphElement.radius, getMousePosition().getX(), getMousePosition().getY()));
         } else if (event instanceof MouseEvent) {
@@ -232,14 +263,18 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
 
     private void addEdge(GraphVertex v1, GraphVertex v2) {
         try {
-            int capacity = Integer.parseInt(JOptionPane.showInputDialog("Input capacity for the new edge"));
+            String input = JOptionPane.showInputDialog("Input capacity for the new edge");
+            if (input == null) {
+                return;
+            }
+            int capacity = Integer.parseInt(input);
             Edge newEdge = controller.addEdge(v1.getData().getName(), v2.getData().getName(), capacity);
             graphDisplay.addEdge(newEdge);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Capacity must be a decimal number");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -295,8 +330,9 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
 
         drawingPanel = new javax.swing.JPanel();
         panelRun = new javax.swing.JPanel();
-        btnRun = new javax.swing.JButton();
         lblRunStatus = new javax.swing.JLabel();
+        btnClear = new javax.swing.JButton();
+        btnRun = new javax.swing.JButton();
         panelStepNav = new javax.swing.JPanel();
         btnPrevStep = new javax.swing.JButton();
         btnNextStep = new javax.swing.JButton();
@@ -311,6 +347,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         mnAboutProg = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setSize(new java.awt.Dimension(50, 50));
 
         drawingPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -318,18 +355,12 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         drawingPanel.setLayout(drawingPanelLayout);
         drawingPanelLayout.setHorizontalGroup(
             drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 445, Short.MAX_VALUE)
+            .addGap(0, 594, Short.MAX_VALUE)
         );
         drawingPanelLayout.setVerticalGroup(
             drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 671, Short.MAX_VALUE)
+            .addGap(0, 461, Short.MAX_VALUE)
         );
-
-        btnRun.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRunActionPerformed(evt);
-            }
-        });
 
         lblRunStatus.setText("Run Status");
 
@@ -359,10 +390,9 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 .addContainerGap()
                 .addComponent(btnPrevStep)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblStep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblStep, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNextStep)
-                .addContainerGap())
+                .addComponent(btnNextStep, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         panelStepNavLayout.setVerticalGroup(
             panelStepNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -382,20 +412,26 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             .addGroup(panelRunLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblRunStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRunStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnClear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelStepNav, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(panelRunLayout.createSequentialGroup()
+                        .addComponent(panelStepNav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         panelRunLayout.setVerticalGroup(
             panelRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelRunLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(btnClear)
+                .addGap(18, 18, 18)
                 .addComponent(btnRun)
                 .addGap(18, 18, 18)
                 .addComponent(lblRunStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(panelStepNav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(525, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         mnFile.setText("File");
@@ -448,24 +484,18 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(339, 339, 339))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(486, Short.MAX_VALUE)
-                    .addComponent(panelRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panelRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(panelRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(25, Short.MAX_VALUE)))
         );
 
         pack();
@@ -541,10 +571,6 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         }
     }//GEN-LAST:event_btnNextStepActionPerformed
 
-    private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
-
-    }//GEN-LAST:event_btnRunActionPerformed
-
     private void mnAboutProgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnAboutProgActionPerformed
         new AboutDialog(this, true).setVisible(true);
     }//GEN-LAST:event_mnAboutProgActionPerformed
@@ -593,6 +619,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
     private javax.swing.JButton btnNextStep;
     private javax.swing.JButton btnPrevStep;
     private javax.swing.JButton btnRun;

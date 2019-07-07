@@ -53,7 +53,7 @@ public class Graph implements Serializable, Cloneable {
 
     public void setSource(Vertex source) throws Exception {
         if (source.equals(this.sink)) {
-            throw new Exception("Source cant be sink");
+            this.sink = null;
         }
         if (this.source != null) {
             this.source.setSource(false);
@@ -68,7 +68,7 @@ public class Graph implements Serializable, Cloneable {
 
     public void setSink(Vertex sink) throws Exception {
         if (sink.equals(this.source)) {
-            throw new Exception("Sink cant be source");
+            this.source = null;
         }
         if (this.sink != null) {
             this.sink.setSink(false);
