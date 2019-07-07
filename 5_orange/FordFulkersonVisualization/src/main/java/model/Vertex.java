@@ -9,6 +9,25 @@ public class Vertex  implements Serializable{
     private Edge cameFrom;
     private ArrayList<Edge> neighbours;
     private Boolean visited;
+    
+    private boolean isSource; 
+    private boolean isSink;
+
+    public boolean isSource() {
+        return isSource;
+    }
+
+    public void setSource(boolean isSource) {
+        this.isSource = isSource;
+    }
+
+    public boolean isSink() {
+        return isSink;
+    }
+
+    public void setSink(boolean isSink) {
+        this.isSink = isSink;
+    }
 
     public String getName() {
         return name;
@@ -44,7 +63,7 @@ public class Vertex  implements Serializable{
     
     public Vertex(String name) {
         this.name = name;
-        neighbours = new ArrayList();
+        neighbours = new ArrayList<>();
         visited = false;
         cameFrom = null;
     }

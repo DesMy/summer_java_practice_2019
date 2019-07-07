@@ -9,7 +9,6 @@ package ui;
  *
  * @author theph
  */
-public interface VertexPositionChangedListener {
-    void onPositionChanged(int newX, int newY);
-    
+public interface SettingChangedListener {
+    void onSettingChanged();
 }

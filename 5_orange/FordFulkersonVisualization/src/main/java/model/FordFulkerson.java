@@ -5,7 +5,10 @@ import java.util.LinkedList;
 
 public class FordFulkerson {
 
-    public static LinkedList<Graph> process(Graph graph, PathFindingAlgorhithm pathFinder) {
+    public static LinkedList<Graph> process(Graph graph, PathFindingAlgorhithm pathFinder) throws Exception {
+        if(graph.getSource()==null) throw new Exception("Source is null");
+        if(graph.getSink()==null) throw new Exception("Sink is null");
+        
         // cannot find a path from source to sink, algorithm stop;
         LinkedList<Graph> result = new LinkedList<>() ;
         result.add(graph.clone());
@@ -30,6 +33,7 @@ public class FordFulkerson {
             }
             // TODO: clone the graph
             result.add(graph.clone());
+            graph.initPrevFlow();
         }
         return result;
     }

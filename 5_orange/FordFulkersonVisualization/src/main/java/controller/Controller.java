@@ -36,22 +36,22 @@ public class Controller {
         this.graph = new Graph();
     }
 
-    public Edge addEdge(String start, String end, int capacity) throws VertexNotFoundException {
+    public Edge addEdge(String start, String end, int capacity) throws VertexNotFoundException, Exception {
         Vertex v1 = graph.getVertexByName(start);
         Vertex v2 = graph.getVertexByName(end);
         if(v1==null || v2==null) throw new VertexNotFoundException();
         return graph.addEdge(v1,v2, capacity);
     }
 
-    public Vertex addVertex(String newVertex) {
+    public Vertex addVertex(String newVertex) throws Exception {
         return graph.addVertex(newVertex);
     }
     
-    public void setSource(String name){
+    public void setSource(String name) throws Exception{
         graph.setSource(graph.getVertexByName(name));
     }
     
-    public void setSink(String name){
+    public void setSink(String name) throws Exception{
         graph.setSink(graph.getVertexByName(name));
     }
     
@@ -67,8 +67,12 @@ public class Controller {
     
         graph.deleteEdge(v1, v2);
     }
+    
+    public void deleteEdge(Edge e) throws VertexNotFoundException{
+        graph.deleteEdge(e.getStart(), e.getEnd());
+    }
 
-    public void process() {
+    public void process() throws Exception {
         result = FordFulkerson.process(graph, new DFS());
     }
     
@@ -108,7 +112,7 @@ public class Controller {
         fw.close();
     }
 
-    public void loadFile(String fileName) throws FileNotFoundException, IOException {
+    public void loadFile(String fileName) throws FileNotFoundException, IOException, Exception {
 
         FileReader fr = new FileReader(fileName);
         Scanner sc = new Scanner(fr);        

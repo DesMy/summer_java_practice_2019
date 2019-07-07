@@ -21,7 +21,7 @@ public abstract class GraphElement extends JComponent {
     private static int id_cur = 0;
     protected int id;
 
-    static final int radius = 20;
+    public static final int radius = 20;
     
     protected boolean selected;
     

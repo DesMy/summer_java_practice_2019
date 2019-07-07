@@ -8,11 +8,18 @@ package ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.event.MouseInputAdapter;
 import model.Vertex;
 
 /**
@@ -21,64 +28,53 @@ import model.Vertex;
  */
 public class GraphVertex extends GraphElement {
 
-    LinkedList<VertexPositionChangedListener> listeners;
-    
+    LinkedList<VertexActionListener> listeners;
+
     private Vertex data;
-        //variables for drag and drop vertex
+    //variables for drag and drop vertex
     private boolean dragging = false;
+
     private int mouseX = 0;
     private int mouseY = 0;
     private int dragStartX = 0;
     private int dragStartY = 0;
-    
+
+    JPopupMenu contextMenu;
+
     public GraphVertex(JPanel parent, int x, int y, Vertex data) {
         super(parent);
         this.data = data;
         this.setLocation(x, y);
-        this.setSize(radius * 4, radius * 2);
+        this.setSize(radius * 2, radius * 2);
         listeners = new LinkedList<>();
-        
-                this.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    GraphVertex.this.selected = !GraphVertex.this.selected;
-                    repaint();
-                }
-            }
+        this.initContextMenu();
+        this.addMouseListener(new MouseInputAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     mouseX = e.getXOnScreen();
                     mouseY = e.getYOnScreen();
 
                     dragStartX = getX();
                     dragStartY = getY();
-                    
+
                     dragging = true;
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.getButton() == 3) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     dragging = false;
+                    for (VertexActionListener listener : listeners) {
+                        listener.onVertexSelected(GraphVertex.this, e);
+                    }
                 }
             }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-
         });
-        this.addMouseMotionListener(new MouseMotionListener() {
-
+        this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (dragging) {
@@ -87,28 +83,109 @@ public class GraphVertex extends GraphElement {
 
                     int newX = dragStartX + deltaX;
                     int newY = dragStartY + deltaY;
-                    setLocation(newX, newY );
-                    
-                    for(VertexPositionChangedListener listener : listeners){
-                        listener.onPositionChanged(newX, newY);
+                    setLocation(newX, newY);
+
+                    for (VertexActionListener listener : listeners) {
+                        listener.onVertexPositionChanged();
                     }
                 }
+
+            }
+        });
+    }
+
+    private void initContextMenu() {
+        contextMenu = new JPopupMenu();
+
+        JMenuItem addEdgeMI = new JMenuItem("Add edge");
+        addEdgeMI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("selected in graph vertex");
+                System.out.println("number of listener: " + listeners.size());
+                for (VertexActionListener listener : listeners) {
+                    listener.onVertexSelected(GraphVertex.this, e);
+                }
+            }
+        });
+
+        JMenuItem deleteVertexMI = new JMenuItem("Remove vertex");
+        deleteVertexMI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (VertexActionListener listener : listeners) {
+                    listener.onDelete(GraphVertex.this);
+                }
+            }
+        });
+
+        JSeparator sep1 = new JSeparator();
+        JMenuItem setSourceMI = new JMenuItem("Set source");
+        setSourceMI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (VertexActionListener listener : listeners) {
+                    listener.onSourceChanged(GraphVertex.this);
+                }
+            }
+        });
+
+        JMenuItem setSinkMI = new JMenuItem("Set sink");
+        setSinkMI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (VertexActionListener listener : listeners) {
+                    listener.onSinkChanged(GraphVertex.this);
+                }
+            }
+        });
+
+        contextMenu.add(addEdgeMI);
+        contextMenu.add(new JSeparator());
+        contextMenu.add(deleteVertexMI);
+        contextMenu.add(sep1);
+        contextMenu.add(setSourceMI);
+        contextMenu.add(setSinkMI);
+
+        this.addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showContextMenu(e);
             }
 
             @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
+                showContextMenu(e);
+            }
+        });
+        //this.setComponentPopupMenu(contextMenu);
+
+    }
+
+    private void showContextMenu(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            if (Setting.getInstance().getRunningMode() == Setting.MODE_GRAPH_DESIGN) {
+                contextMenu.show(e.getComponent(), e.getX(), e.getY());
             }
 
-        });
+        }
     }
-    public void addVertexPositionChangedListener(VertexPositionChangedListener listener){
+
+    public void addVertexChangedListener(VertexActionListener listener) {
         listeners.add(listener);
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (!this.selected) {
-            g.setColor(Color.GREEN);
+            if (this.data.isSource()) {
+                g.setColor(Color.ORANGE);
+            } else if (this.data.isSink()) {
+                g.setColor(Color.CYAN);
+            } else {
+                g.setColor(Color.GREEN);
+            }
         } else {
             g.setColor(Color.red);
         }
@@ -120,8 +197,11 @@ public class GraphVertex extends GraphElement {
 
     @Override
     public String toString() {
-        if(data!=null) return data.getName()+"";
-        else return id+"";
+        if (data != null) {
+            return data.getName() + "";
+        } else {
+            return id + "";
+        }
     }
 
     public Vertex getData() {
@@ -131,8 +211,5 @@ public class GraphVertex extends GraphElement {
     public void setData(Vertex data) {
         this.data = data;
     }
-    
-    
 
-    
 }

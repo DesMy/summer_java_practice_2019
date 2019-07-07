@@ -7,6 +7,7 @@ public class Edge implements Serializable{
     private Vertex start;
     private Vertex end;
     private int flow;
+    private int prevFlow;
     private int capacity;
 
     public Vertex getStart() {
@@ -29,7 +30,16 @@ public class Edge implements Serializable{
         return flow;
     }
 
+    public int getPrevFlow() {
+        return prevFlow;
+    }
+
+    public void setPrevFlow(int prevFlow) {
+        this.prevFlow = prevFlow;
+    }
+
     public void setFlow(int flow) {
+        this.prevFlow = this.flow;
         this.flow = flow;
     }
 

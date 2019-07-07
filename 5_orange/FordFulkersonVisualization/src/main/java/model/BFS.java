@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class BFS extends PathFindingAlgorhithm{
     @Override
     boolean search(Vertex sourcePeak, Vertex sinkPeak) {
-        ArrayList<Vertex> open_set = new ArrayList();
-        ArrayList<Vertex> closed_set = new ArrayList();
+        ArrayList<Vertex> open_set = new ArrayList<>();
+        ArrayList<Vertex> closed_set = new ArrayList<>();
         open_set.add(sourcePeak);
         while (!open_set.isEmpty()) {
 
