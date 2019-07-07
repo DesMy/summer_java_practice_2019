@@ -56,8 +56,14 @@ public class Graph implements Serializable, Cloneable {
         this.sink = sink;
     }
     
-    public Edge addEdge(Vertex start, Vertex end, int capacity) {
+    public Edge addEdge(Vertex start, Vertex end, int capacity) throws Exception {
         Edge edg = new Edge(start, end, capacity);
+        for (int i = edges.size() - 1; i >= 0; i--){
+            if(edg.getStart().equals(edges.get(i).getStart()) 
+                    && edg.getEnd().equals(edges.get(i).getEnd())){
+                throw new Exception("ERROR: This edge already exists!");
+            }
+        }
         edges.add(edg);
         start.getNeighbours().add(edg);
         end.getNeighbours().add(edg);
@@ -66,6 +72,7 @@ public class Graph implements Serializable, Cloneable {
     
     public Vertex addVertex(String newVertex) {
         Vertex result = new Vertex(newVertex);
+        
         vrtx.add(result);
         return result;
     }
@@ -90,9 +97,12 @@ public class Graph implements Serializable, Cloneable {
     
     public void deleteEdge(Vertex v1, Vertex v2) throws VertexNotFoundException {
         if (v1 != null && v2 != null && vrtx.contains(v1) && vrtx.contains(v2)) {
+            
             for (int i = edges.size() - 1; i >= 0; i--) {
                 if (edges.get(i).getStart().equals(v1) && edges.get(i).getEnd().equals(v2)) {
-                    edges.remove(i);
+                    Edge delete = edges.remove(i);
+                    delete.getStart().getNeighbours().remove(delete);
+                    delete.getEnd().getNeighbours().remove(delete);
                     break;
                 }
             }
