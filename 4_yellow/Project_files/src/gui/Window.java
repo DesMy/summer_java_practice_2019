@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import com.sun.deploy.panel.ControlPanel;
+//import com.sun.deploy.panel.ControlPanel;
 import src.source.*;
 import src.draw.*;
 import java.io.*;
@@ -92,6 +92,37 @@ public class Window extends JFrame {
         add(toolBar, BorderLayout.SOUTH);
 
         setVisible(true);
+
+        // Mouse Listeners
+        graphPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+
+                Vertex[] vertices = graphPanel.getGraphDraw().getVertices();
+                for(int i = 0; i < vertices.length; i++){
+                    if(e.getX() < vertices[i].getVertexCenter().x + Vertex.radius/2 &&
+                    e.getX() > vertices[i].getVertexCenter().x - Vertex.radius/2 &&
+                    e.getY() < vertices[i].getVertexCenter().y + Vertex.radius/2 &&
+                    e.getY() > vertices[i].getVertexCenter().y - Vertex.radius/2)
+                        textArea.append("ура");
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                System.out.println(e.getX() + " " + e.getY());
+            }
+        });
+
+        graphPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                System.out.println(e.getX() + " " + e.getY());
+            }
+        });
     }
 
     private JPanel createToolBar(){
@@ -124,9 +155,11 @@ public class Window extends JFrame {
     //кнопка "Считать с файла"
     public class ButtonFileRead implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //graph = new BridgeFinder(readFile());
             graphPanel.setGraph(new BridgeFinder(readFile()));
-            textArea.append("Файл считан.\n");
+            textArea.append("Файл успешно считан.\n");
+
+            //изображение графа
+            graphPanel.repaint(graphPanel.getVisibleRect());
         }
     }
 
@@ -150,6 +183,7 @@ public class Window extends JFrame {
             BridgeFinder finder = (BridgeFinder)graphPanel.getGraph();
             finder.startFind();
             finder.printBridgesToTextAre(textArea);
+            graphPanel.repaint(graphPanel.getVisibleRect());
         }
     }
 
@@ -172,8 +206,6 @@ public class Window extends JFrame {
     }
 
     public int[][] readFile(){
-
-
         int[][] matrix = new int[0][0];
         fileChooser.setDialogTitle("Выбор Файла");
         // Определение режима - только файл
@@ -181,7 +213,6 @@ public class Window extends JFrame {
         int result = fileChooser.showOpenDialog(Window.this);
         // Создаем наш файл
         File newfile = new File(fileChooser.getSelectedFile().toString());
-        //System.out.println(newfile.getName());
         if(newfile.exists()== true)
         {
             try {
@@ -206,7 +237,6 @@ public class Window extends JFrame {
                                 matrix[count][numbervertex] = Character.getNumericValue(ary[number]);
                                 numbervertex++;
                                 number++;
-
                             }
                             else
                             {
@@ -219,16 +249,11 @@ public class Window extends JFrame {
                             count ++;
                             numbervertex = 0;
                         }
-
-
                     }
-
                 }
-
             }catch (IOException q){
                 System.out.println("Ошибка");
             }
-
         }
         return matrix;
     }
