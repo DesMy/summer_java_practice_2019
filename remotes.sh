@@ -5,3 +5,5 @@ git remote add levi218 https://github.com/levi218/summer_java_practice_2019
 git remote add AlexoAleksei https://github.com/AlexoAleksei/summer_java_practice_2019
 git remote add 1fanfan1 https://github.com/1fanfan1/summer_java_practice_2019
 git remote add DesMy https://github.com/DesMy/summer_java_practice_2019
+git remote add almostpurplerain https://github.com/almostpurplerain/summer_java_practice_2019
+git remote add Villain123 https://github.com/Villain123/summer_java_practice_2019
