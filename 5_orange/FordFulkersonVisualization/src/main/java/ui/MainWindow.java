@@ -140,12 +140,12 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
 
     private void runAlgorithm() {
         try {
-            Setting.getInstance().setRunningMode(Setting.MODE_ALGORITHM_VISUALIZING);
             long time = System.currentTimeMillis();
             controller.process();
             long duration = System.currentTimeMillis() - time;
             lblRunStatus.setText("<html>Run status: Completed in " + (duration / 1000f) + "s. <br>Total flow: " + controller.getStep(controller.getNumberOfStep()).getTotalFlow() + "</html>");
             goToStep(controller.getNumberOfStep());
+            Setting.getInstance().setRunningMode(Setting.MODE_ALGORITHM_VISUALIZING);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
