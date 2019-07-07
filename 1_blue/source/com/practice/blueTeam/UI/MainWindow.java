@@ -65,7 +65,5 @@ public class MainWindow extends  JFrame {
         newGame.setLocation(buttonsPanel.getX(),0);
         close.setLocation(buttonsPanel.getX(),buttonsPanel.getHeight()/2);
         mainPanel.add(buttonsPanel);
-
     }
-
 }
