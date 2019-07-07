@@ -1,22 +1,40 @@
 package src.source;
 
+import java.awt.*;
+
 public class Vertex {
-    private boolean visited;
-    private int number;
+    private Point vertexCenter;
+    private Color color;
+    public final static int radius = 60;
 
-    public boolean isVisited(){
-        return visited;
+    public Vertex() {
+        vertexCenter = new Point();
+        color = Color.CYAN;
+
     }
 
-    public void setVisited(boolean bool){
-        visited = bool;
+    public Vertex(int radius) {
+        vertexCenter = new Point();
+        color = Color.CYAN;
+
     }
 
-    public int getNumber(){
-        return number;
+    public Point getVertexCenter() {
+        return vertexCenter;
     }
 
-    public void setNumber(int number){
-        this.number = number;
+    public void setVertexCenters(int x, int y) {
+        vertexCenter.x = x;
+        vertexCenter.y = y;
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color newColor) {
+        color = newColor;
+    }
+
+
 }
