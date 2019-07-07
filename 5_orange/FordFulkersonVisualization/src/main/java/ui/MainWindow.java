@@ -294,7 +294,6 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
     private void initComponents() {
 
         drawingPanel = new javax.swing.JPanel();
-        tpanelFunction = new javax.swing.JTabbedPane();
         panelRun = new javax.swing.JPanel();
         btnRun = new javax.swing.JButton();
         lblRunStatus = new javax.swing.JLabel();
@@ -302,9 +301,6 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         btnPrevStep = new javax.swing.JButton();
         btnNextStep = new javax.swing.JButton();
         lblStep = new javax.swing.JLabel();
-        panelLog = new javax.swing.JPanel();
-        scrLog = new javax.swing.JScrollPane();
-        txtLog = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         mnFile = new javax.swing.JMenu();
         mnLoad = new javax.swing.JMenuItem();
@@ -326,7 +322,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         );
         drawingPanelLayout.setVerticalGroup(
             drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 671, Short.MAX_VALUE)
         );
 
         btnRun.addActionListener(new java.awt.event.ActionListener() {
@@ -363,7 +359,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 .addContainerGap()
                 .addComponent(btnPrevStep)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblStep, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                .addComponent(lblStep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNextStep)
                 .addContainerGap())
@@ -386,12 +382,9 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             .addGroup(panelRunLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelRunLayout.createSequentialGroup()
-                        .addComponent(lblRunStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 8, Short.MAX_VALUE))
+                    .addComponent(lblRunStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelStepNav, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(panelStepNav, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         panelRunLayout.setVerticalGroup(
             panelRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -402,33 +395,8 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 .addComponent(lblRunStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelStepNav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(511, Short.MAX_VALUE))
+                .addContainerGap(525, Short.MAX_VALUE))
         );
-
-        tpanelFunction.addTab("Functions", panelRun);
-
-        txtLog.setColumns(20);
-        txtLog.setRows(5);
-        scrLog.setViewportView(txtLog);
-
-        javax.swing.GroupLayout panelLogLayout = new javax.swing.GroupLayout(panelLog);
-        panelLog.setLayout(panelLogLayout);
-        panelLogLayout.setHorizontalGroup(
-            panelLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelLogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrLog, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        panelLogLayout.setVerticalGroup(
-            panelLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelLogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrLog, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tpanelFunction.addTab("Log", panelLog);
 
         mnFile.setText("File");
 
@@ -480,21 +448,25 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tpanelFunction, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(339, 339, 339))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(486, Short.MAX_VALUE)
+                    .addComponent(panelRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tpanelFunction)
-                    .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(drawingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(panelRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(25, Short.MAX_VALUE)))
         );
-
-        tpanelFunction.getAccessibleContext().setAccessibleName("Run");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -522,7 +494,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 controller.loadFile(chooser.getSelectedFile().getAbsolutePath());
                 graphDisplay.init(controller.graph);
                 graphDisplay.repaint();
-
+                Setting.getInstance().setRunningMode(Setting.MODE_GRAPH_DESIGN);
             } catch (IOException ex) {
                 Logger.getLogger(MainWindow.class
                         .getName()).log(Level.SEVERE, null, ex);
@@ -634,13 +606,9 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
     private javax.swing.JMenu mnFile;
     private javax.swing.JMenuItem mnLoad;
     private javax.swing.JMenuItem mnSave;
-    private javax.swing.JPanel panelLog;
     private javax.swing.JPanel panelRun;
     private javax.swing.JPanel panelStepNav;
-    private javax.swing.JScrollPane scrLog;
     private javax.swing.JPopupMenu.Separator separator1;
-    private javax.swing.JTabbedPane tpanelFunction;
-    private javax.swing.JTextArea txtLog;
     // End of variables declaration//GEN-END:variables
 
 }
