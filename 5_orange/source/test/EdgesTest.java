@@ -4,9 +4,6 @@
  * and open the template in the editor.
  */
 
-import model.BFS;
-import model.DFS;
-import model.FordFulkerson;
 import model.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,25 +16,24 @@ import ui.VertexNotFoundException;
  *
  * @author duyenNH
  */
-public class LogicTest {
-
+public class EdgesTest {
+    
     private Graph graph;
-
-    public LogicTest() {
+    
+    public EdgesTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() {
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
     }
-
+    
     @Before
     public void setUp() throws Exception {
         graph = new Graph();
-
         graph.addVertex("A");
         graph.addVertex("B");
         graph.addVertex("C");
@@ -56,52 +52,52 @@ public class LogicTest {
 
         graph.setSource(graph.getVertexByName("A"));
         graph.setSink(graph.getVertexByName("F"));
-
     }
-
+    
     @After
     public void tearDown() {
     }
-
-    @org.junit.Test(expected = Exception.class)
-    public void testProcessWithoutSource() throws VertexNotFoundException, Exception {
-        graph.deleteVertex(graph.getSource());
-        FordFulkerson.process(graph, new DFS());
-    }
-
-    @org.junit.Test(expected = Exception.class)
-    public void testProcessWithoutSink() throws VertexNotFoundException, Exception {
-        graph.deleteVertex(graph.getSink());
-        FordFulkerson.process(graph, new DFS());
-        assertEquals(0, graph.getTotalFlow());
-    }
-
-    @org.junit.Test
-    public void testProcessFFWithBFS() throws Exception {
-        FordFulkerson.process(graph, new BFS());
-        assertEquals(8, graph.getTotalFlow());
-    }
-
-    @org.junit.Test
-    public void testProcessFFWithDFS() throws Exception {
-        FordFulkerson.process(graph, new DFS());
-        assertEquals(8, graph.getTotalFlow());
-    }
     
     @org.junit.Test
-    public void testProcess() throws Exception{
-        graph = new Graph();
-        for(int i = 0; i < 1000; i++){
-            graph.addVertex(Integer.toString(i));
-        }
-        for(int i = 5; i<1000; i++){
-            for(int j = 1; j < 5; j++){
-                graph.addEdge(graph.getVertexByName(Integer.toString(i)), 
-                        graph.getVertexByName(Integer.toString(j)), i);
-            }
-        } 
-        graph.setSource(graph.getVertexByName("1"));
-        graph.setSink(graph.getVertexByName("999"));
-        FordFulkerson.process(graph, new DFS());
+    public void testAddEdges() throws Exception {
+        assertEquals(8, graph.getEdges().size());
+
+        graph.addEdge(graph.getVertexByName("C"), graph.getVertexByName("F"), 3);
+
+        assertEquals(4, graph.getVrtx().get(2).getNeighbours().size()); //vertex C
+        assertEquals(9, graph.getEdges().size());
     }
+
+    @org.junit.Test(expected = Exception.class)
+    public void testAddEdgesExists() throws Exception {
+        graph.addEdge(graph.getVertexByName("C"), graph.getVertexByName("E"), 4);
+    }
+
+    @org.junit.Test(expected = NullPointerException.class)
+    public void testAddEdgesWithoutStrartVrtx() throws Exception {
+        graph.addEdge(graph.getVertexByName("Z"), graph.getVertexByName("B"), 9);
+    }
+
+    @org.junit.Test(expected = NullPointerException.class)
+    public void testAddEdgesWithoutEndVrtx() throws Exception {
+        graph.addEdge(graph.getVertexByName("C"), graph.getVertexByName("I"), 7);
+    }    
+    
+    @org.junit.Test
+    public void testDelEdge() throws VertexNotFoundException {
+        assertEquals(3, graph.getVrtx().get(1).getNeighbours().size());//Vertex B
+
+        graph.deleteEdge(graph.getVertexByName("B"), graph.getVertexByName("D"));
+
+        assertEquals(2, graph.getVrtx().get(3).getNeighbours().size());//Vertex B
+        assertEquals(7, graph.getEdges().size());
+        assertNotNull(graph.getVertexByName("B"));
+        assertNotNull(graph.getVertexByName("D"));
+    }
+    
+    @org.junit.Test(expected = VertexNotFoundException.class)
+    public void testDelEdgeNotExists() throws VertexNotFoundException{
+        graph.deleteEdge(graph.getVertexByName("B"), graph.getVertexByName("Z"));
+    }
+
 }

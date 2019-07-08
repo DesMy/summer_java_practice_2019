@@ -4,36 +4,34 @@
  * and open the template in the editor.
  */
 
-import model.BFS;
-import model.DFS;
-import model.FordFulkerson;
+import controller.Controller;
+import java.io.IOException;
 import model.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
-import ui.VertexNotFoundException;
 
 /**
  *
  * @author duyenNH
  */
-public class LogicTest {
-
+public class IOFileTest {
+    
     private Graph graph;
-
-    public LogicTest() {
+    
+    public IOFileTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() {
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
     }
-
+    
     @Before
     public void setUp() throws Exception {
         graph = new Graph();
@@ -56,52 +54,23 @@ public class LogicTest {
 
         graph.setSource(graph.getVertexByName("A"));
         graph.setSink(graph.getVertexByName("F"));
-
     }
-
+    
     @After
     public void tearDown() {
     }
 
-    @org.junit.Test(expected = Exception.class)
-    public void testProcessWithoutSource() throws VertexNotFoundException, Exception {
-        graph.deleteVertex(graph.getSource());
-        FordFulkerson.process(graph, new DFS());
-    }
-
-    @org.junit.Test(expected = Exception.class)
-    public void testProcessWithoutSink() throws VertexNotFoundException, Exception {
-        graph.deleteVertex(graph.getSink());
-        FordFulkerson.process(graph, new DFS());
-        assertEquals(0, graph.getTotalFlow());
-    }
-
     @org.junit.Test
-    public void testProcessFFWithBFS() throws Exception {
-        FordFulkerson.process(graph, new BFS());
-        assertEquals(8, graph.getTotalFlow());
-    }
+    public void testIOFile() throws IOException, Exception {
+        Controller c = new Controller();
+        c.graph = graph;
 
-    @org.junit.Test
-    public void testProcessFFWithDFS() throws Exception {
-        FordFulkerson.process(graph, new DFS());
-        assertEquals(8, graph.getTotalFlow());
-    }
-    
-    @org.junit.Test
-    public void testProcess() throws Exception{
-        graph = new Graph();
-        for(int i = 0; i < 1000; i++){
-            graph.addVertex(Integer.toString(i));
-        }
-        for(int i = 5; i<1000; i++){
-            for(int j = 1; j < 5; j++){
-                graph.addEdge(graph.getVertexByName(Integer.toString(i)), 
-                        graph.getVertexByName(Integer.toString(j)), i);
-            }
-        } 
-        graph.setSource(graph.getVertexByName("1"));
-        graph.setSink(graph.getVertexByName("999"));
-        FordFulkerson.process(graph, new DFS());
+        c.saveFile("test2.txt");
+
+        // TODO review the generated test code and remove the default call to fail.
+        c.loadFile("test2.txt");
+        assertEquals(6, c.graph.getVrtx().size());
+        assertEquals(8, c.graph.getEdges().size());
+        assertEquals("F", c.graph.getVrtx().get(5).getName());
     }
 }

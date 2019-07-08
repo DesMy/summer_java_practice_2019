@@ -4,9 +4,6 @@
  * and open the template in the editor.
  */
 
-import model.BFS;
-import model.DFS;
-import model.FordFulkerson;
 import model.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,25 +16,24 @@ import ui.VertexNotFoundException;
  *
  * @author duyenNH
  */
-public class LogicTest {
-
+public class VertexTest {
+    
     private Graph graph;
-
-    public LogicTest() {
+    
+    public VertexTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() {
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
     }
-
+    
     @Before
     public void setUp() throws Exception {
         graph = new Graph();
-
         graph.addVertex("A");
         graph.addVertex("B");
         graph.addVertex("C");
@@ -56,52 +52,53 @@ public class LogicTest {
 
         graph.setSource(graph.getVertexByName("A"));
         graph.setSink(graph.getVertexByName("F"));
-
     }
-
+    
     @After
     public void tearDown() {
     }
-
-    @org.junit.Test(expected = Exception.class)
-    public void testProcessWithoutSource() throws VertexNotFoundException, Exception {
-        graph.deleteVertex(graph.getSource());
-        FordFulkerson.process(graph, new DFS());
-    }
-
-    @org.junit.Test(expected = Exception.class)
-    public void testProcessWithoutSink() throws VertexNotFoundException, Exception {
-        graph.deleteVertex(graph.getSink());
-        FordFulkerson.process(graph, new DFS());
-        assertEquals(0, graph.getTotalFlow());
-    }
-
-    @org.junit.Test
-    public void testProcessFFWithBFS() throws Exception {
-        FordFulkerson.process(graph, new BFS());
-        assertEquals(8, graph.getTotalFlow());
-    }
-
-    @org.junit.Test
-    public void testProcessFFWithDFS() throws Exception {
-        FordFulkerson.process(graph, new DFS());
-        assertEquals(8, graph.getTotalFlow());
-    }
     
     @org.junit.Test
-    public void testProcess() throws Exception{
-        graph = new Graph();
-        for(int i = 0; i < 1000; i++){
-            graph.addVertex(Integer.toString(i));
-        }
-        for(int i = 5; i<1000; i++){
-            for(int j = 1; j < 5; j++){
-                graph.addEdge(graph.getVertexByName(Integer.toString(i)), 
-                        graph.getVertexByName(Integer.toString(j)), i);
-            }
-        } 
-        graph.setSource(graph.getVertexByName("1"));
-        graph.setSink(graph.getVertexByName("999"));
-        FordFulkerson.process(graph, new DFS());
+    public void testAddVertex() throws Exception {
+        assertEquals(6, graph.getVrtx().size());
+
+        graph.addVertex("G");
+
+        assertEquals(7, graph.getVrtx().size());
+        assertEquals("G", graph.getVrtx().get(6).getName());
+        assertEquals(0, graph.getVrtx().get(6).getNeighbours().size());
+    }   
+
+    @org.junit.Test(expected = Exception.class)
+    public void testAddVertexExists() throws Exception {
+        graph.addVertex("A");
     }
+
+    @org.junit.Test(expected = VertexNotFoundException.class)
+    public void testDelVertexNotExists() throws VertexNotFoundException {
+        graph.deleteVertex(graph.getVertexByName("S"));
+    }
+
+    @org.junit.Test
+    public void testDelVertex() throws VertexNotFoundException {
+        assertNotNull(graph.getVertexByName("C"));
+
+        graph.deleteVertex(graph.getVertexByName("C"));
+
+        assertEquals(5, graph.getVrtx().size());
+        assertNull(graph.getVertexByName("C"));
+    }
+
+    @org.junit.Test
+    public void testDelVertexSource() throws VertexNotFoundException {
+        graph.deleteVertex(graph.getSource());
+        assertNull(graph.getSource());
+    }
+
+    @org.junit.Test
+    public void testDelVertexSink() throws VertexNotFoundException {
+        graph.deleteVertex(graph.getSink());
+        assertNull(graph.getSink());
+    }
+
 }
