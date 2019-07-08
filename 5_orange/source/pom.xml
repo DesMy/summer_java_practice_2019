@@ -25,7 +25,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <build>
-	    <directory>${project.basedir}/target</directory>
+	    <directory>${project.basedir}/../bin/target</directory>
 	    <outputDirectory>${project.build.directory}/classes</outputDirectory>
 	    <finalName>${project.artifactId}-${project.version}</finalName>
 	    <testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
@@ -48,7 +48,7 @@
 	                <artifactId>maven-jar-plugin</artifactId>
 	                <version>3.1.2</version>
 	                <configuration>
-			    	<outputDirectory>${project.basedir}/bin</outputDirectory>
+			    	<outputDirectory>${project.basedir}/../bin</outputDirectory>
 	                    <archive>
 	                        <manifest>
 	                            <addClasspath>true</addClasspath>
