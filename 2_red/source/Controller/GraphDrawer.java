@@ -44,6 +44,8 @@ public class GraphDrawer extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
         edgeDrawer.paint(g);
         nodeDrawer.paint(g);
     }
