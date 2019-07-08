@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Test;
+package test;
 
 import controller.Controller;
 import java.io.IOException;
@@ -154,7 +154,7 @@ public class LogicTest {
     public void testInputFile() throws IOException, Exception {
         Controller c = new Controller();
 
-        c.loadFile("file.txt");
+        c.loadFile("resources\\file.txt");
 
         assertEquals(3, c.graph.getVrtx().size());
         assertEquals(2, c.graph.getEdges().size());
@@ -168,10 +168,10 @@ public class LogicTest {
         Controller c = new Controller();
         c.graph = graph;
 
-        c.saveFile("test2.txt");
+        c.saveFile("resources\\test2.txt");
 
         // TODO review the generated test code and remove the default call to fail.
-        c.loadFile("test2.txt");
+        c.loadFile("resources\\test2.txt");
         assertEquals(6, c.graph.getVrtx().size());
         assertEquals(8, c.graph.getEdges().size());
         assertEquals("F", c.graph.getVrtx().get(5).getName());

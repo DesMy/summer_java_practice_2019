@@ -116,7 +116,7 @@ public class Controller {
 
         FileReader fr = new FileReader(fileName);
         Scanner sc = new Scanner(fr);        
-        graph = new Graph();
+        Graph graph = new Graph();
         
         int V = sc.nextInt();
         for (int i = 0; i < V; i++) {
@@ -139,5 +139,6 @@ public class Controller {
             graph.setSink(graph.getVertexByName(sinkName));
         }
         fr.close();
+        this.graph = graph;
     }
 }

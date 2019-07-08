@@ -286,6 +286,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             controller.setSource(newSource.getData().getName());
 
         } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
             Logger.getLogger(MainWindow.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -297,6 +298,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             controller.setSink(newSink.getData().getName());
 
         } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
             Logger.getLogger(MainWindow.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -311,6 +313,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
             graphDisplay.deleteEdges(result.getAffectedEdges());
 
         } catch (VertexNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
             Logger.getLogger(MainWindow.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -531,10 +534,12 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 graphDisplay.repaint();
                 Setting.getInstance().setRunningMode(Setting.MODE_GRAPH_DESIGN);
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "ERROR: File not found");
                 Logger.getLogger(MainWindow.class
                         .getName()).log(Level.SEVERE, null, ex);
 
             } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "ERROR: File not valid");
                 Logger.getLogger(MainWindow.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
@@ -556,6 +561,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 controller.saveFile(chooser.getSelectedFile().getName());
 
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "ERROR: File cannot be written");
                 Logger.getLogger(MainWindow.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
