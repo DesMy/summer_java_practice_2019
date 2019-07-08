@@ -8,6 +8,11 @@ import java.util.HashMap;
  */
 
 public class AhoCor {
+
+
+
+
+
     public class resultPair {
         int position;
         int template;

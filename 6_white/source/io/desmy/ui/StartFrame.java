@@ -112,8 +112,6 @@ public class StartFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 AlgoritmTest newTest = new AlgoritmTest();
-                //System.out.println(textArea.getText());
-                //System.out.println(textArea1.getText());
                 newTest.test1(textArea.getText(), textArea1.getText());
             }
         });

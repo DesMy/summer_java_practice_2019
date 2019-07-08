@@ -1,12 +1,29 @@
 package io.desmy.project;
 
+import java.util.HashMap;
+
 public class Bohr {
     private Node head;
     private Node now;
     private int index;
 
+    private HashMap<Integer, Pair> pair;
+    public class Pair{
+        private int len;
+        private String shape;
+
+        public Pair(String str){
+            shape = new String(str);
+            len = shape.length();
+        }
+
+        public int getLen() { return len; }
+        public String getShape() { return shape; }
+    }
+
     public Bohr() {
         head = new Node();
+        pair = new HashMap<>();
         now = head;
         index = 0;
     }
@@ -45,6 +62,23 @@ public class Bohr {
             i++;
         }
     }
+
+    public void stringToPair(String str) {
+        StringBuilder text = new StringBuilder(str);
+        text.append(' ');
+        int k = 0, j = 0;
+        for(int i = 0; i < text.length(); i++)
+            if(text.charAt(i) != ' ') {
+                for (j = i; text.charAt(j) != ' '; j++);
+                pair.put(k++, new Pair(text.substring(i, j)));
+                i = j;
+            }
+    }
+
+    public HashMap<Integer, Pair> getPair() {
+        return pair;
+    }
+
     public Node getHead() { return head; };
     public void setNow(Node n) { now = n; }
     public Node getNow() { return now; }

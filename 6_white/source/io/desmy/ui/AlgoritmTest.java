@@ -7,14 +7,9 @@ public class AlgoritmTest {
     public void test1(String str, String text) {
         Bohr testBohr = new Bohr();
         testBohr.stringToBohr(str);
+        testBohr.stringToPair(str);
         AhoCor test1 = new AhoCor();
         test1.processText(text, testBohr);
-        test1.answer.forEach((key, value) -> {
-
-            System.out.print("text position: "+ value.getPosition());
-
-            System.out.println(", template: "+ (value.getTemplate() + 1));
-
-        });
+        AnswerFrame answerFrame = new AnswerFrame(test1, testBohr);
     }
 }
