@@ -1,18 +1,14 @@
 package com.practice.blueTeam.UI;
 
-import com.practice.blueTeam.Algo.Main;
-import com.practice.blueTeam.Algo.Puzzle;
-import com.practice.blueTeam.Algo.Wrap;
 import com.practice.blueTeam.DataBase.DataBase;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LevelWindow extends JFrame {
+public class SecretLevel extends JFrame {
     private JButton closeButton = new JButton("Close");
     private JButton randomButton = new JButton("Random");
     private JButton buildButton = new JButton("Show Solution");
@@ -20,39 +16,39 @@ public class LevelWindow extends JFrame {
     private JButton prevButton = new JButton("Prev");
     private JButton returnButton = new JButton("Return to Main menu");
     private JPanel tilesPanel = new JPanel();
+
     private int levelNumber;
     private Tile[] tiles;
     public void setTiles() {
         for (int i = 0; i < 16; i++)
         {
-            tiles[i] = new Tile(DataBase.getTilesOrderOnTheScreen(levelNumber)[i].numberOfTile, levelNumber);
-            tiles[i].setIcon(DataBase.getLevelTiles(levelNumber)[DataBase.getTilesOrderOnTheScreen(levelNumber)[i].numberOfTile]);
+            tiles[i] = new Tile(DataBase.getSecretTilesOrderOnTheScreen()[i].numberOfTile, levelNumber);
+            tiles[i].setIcon(DataBase.getSecretTiles()[DataBase.getSecretTilesOrderOnTheScreen()[i].numberOfTile]);
             tiles[i].setBorderPainted(false);
             tiles[i].setFocusPainted(false);
-
         }
         tilesPanel.removeAll();
         for (int i = 0; i < 16; i++) {
             tilesPanel.add(tiles[i]);
-            tiles[i].setIcon(new ImageIcon(DataBase.getLevelTiles(levelNumber)[tiles[i].numberOfTile].getImage().getScaledInstance(tilesPanel.getWidth()/4, tilesPanel.getHeight()/4, Image.SCALE_SMOOTH)));
+            tiles[i].setIcon(new ImageIcon(DataBase.getSecretTiles()[tiles[i].numberOfTile].getImage().getScaledInstance(tilesPanel.getWidth()/4, tilesPanel.getHeight()/4, Image.SCALE_SMOOTH)));
         }
     }
-    public LevelWindow(int levelNumber) {
 
+    public SecretLevel() {
         super("Пятнашки");
-        this.levelNumber = levelNumber;
+
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        tilesPanel = new JPanel();
+        levelNumber = 4;
         tiles = new Tile[16];
-
         int sizeWidth = 800;
         int sizeHeight = 700;
         int locationX = (screenSize.width - sizeWidth) / 2;
         int locationY = (screenSize.height - sizeHeight) / 2;
         this.setBounds(locationX, locationY, sizeWidth, sizeHeight);
         JPanel mainPanel = new JPanel();
-        tilesPanel = new JPanel();
         this.setContentPane(mainPanel);
         mainPanel.setLayout(null);
         mainPanel.setSize(this.getSize());
@@ -74,18 +70,6 @@ public class LevelWindow extends JFrame {
         buttonsPanel.add(closeButton);
         buttonsPanel.add(returnButton);
         mainPanel.add(buttonsPanel);
-        nextButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                DataBase.nextStep(levelNumber);
-            }
-        });
-        prevButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                DataBase.prevStep(levelNumber);
-            }
-        });
         closeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -95,7 +79,7 @@ public class LevelWindow extends JFrame {
         returnButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DataBase.getLevelWindows(levelNumber).setVisible(false);
+                DataBase.getSecretLevel().setVisible(false);
                 MainWindow.getUI().setVisible(true);
             }
         });
@@ -103,6 +87,18 @@ public class LevelWindow extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 DataBase.randomizePuzzle(levelNumber);
+            }
+        });
+        nextButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DataBase.secretNextStep();
+            }
+        });
+        prevButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DataBase.secretPrevStep();
             }
         });
     }

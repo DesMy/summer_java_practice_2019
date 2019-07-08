@@ -1,6 +1,11 @@
 package com.practice.blueTeam.UI;
 
+import com.practice.blueTeam.DataBase.DataBase;
+
 import javax.swing.*;
+import javax.xml.crypto.Data;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Tile extends JButton {
     // является ли последним тайлом
@@ -11,18 +16,17 @@ public class Tile extends JButton {
     public void setLast(boolean last) {
         this.last = last;
     }
+
+    public int getNumberOfTile() {
+        return numberOfTile;
+    }
+
     // номер тайла
     int numberOfTile;
-    //Картинка тайла
-    private ImageIcon imageIcon;
-    public ImageIcon getImageIcon() {
-        return imageIcon;
-    }
-    public void setImageIcon(ImageIcon imageIcon) {
-        this.imageIcon = imageIcon;
-    }
+    int levelNumber;
     // конструктор
-    public Tile(int numberOfTile) {
+    public Tile(int numberOfTile, int levelNumber) {
+        this.last = false;
         this.numberOfTile = numberOfTile;
         if (numberOfTile == 15)
             this.last = true;
@@ -34,5 +38,23 @@ public class Tile extends JButton {
             setVisible(false);
         else
             setVisible(true);
+        if (levelNumber == DataBase.getNumberOfLevels() + 1) {
+            this.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    DataBase.Move(numberOfTile);
+                    DataBase.getSecretLevel().setTiles();
+                }
+            });
+        } else {
+            this.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    DataBase.Move(numberOfTile, levelNumber);
+                    DataBase.getLevelWindows(levelNumber).setTiles();
+                }
+            });
+        }
+
     }
 }

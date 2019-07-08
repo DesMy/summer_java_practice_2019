@@ -2,16 +2,20 @@ package com.practice.blueTeam.UI;
 
 
 import com.practice.blueTeam.DataBase.DataBase;
+import com.practice.blueTeam.GameState.GameState;
 
 import javax.swing.*;
 import javax.xml.crypto.Data;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class LevelSelectWindow extends JFrame {
     private static LevelSelectWindow selectWindow = new LevelSelectWindow();
     // массив кнопок выбора уровня
+
     private levelButton[] levelButtons = new levelButton[DataBase.getNumberOfLevels()];
     // класс кнопки выбора уровня
     private class levelButton extends JButton{
@@ -37,15 +41,14 @@ public class LevelSelectWindow extends JFrame {
         public  levelButton(int levelNumber){
             super();
             this.levelNumber = levelNumber;
-            this.addMouseListener(mouseAdapter);
 
         }
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectWindow.setVisible(false);
-                levelWindows[levelNumber] = new LevelWindow(levelNumber);
-                levelWindows[levelNumber].setVisible(true);
+                DataBase.getLevelWindows(levelNumber).setVisible(true);
+                DataBase.randomizePuzzle(levelNumber);
             }
         };
     }
@@ -58,8 +61,30 @@ public class LevelSelectWindow extends JFrame {
             levelButtons[i].setFocusPainted(false);
         }
     }
+
+    @Override
+    public void update(Graphics g) {
+        super.update(g);
+        for (int i = 0; i < levelButtons.length; i++) {
+            if (!GameState.getIsAvailable(i)) {
+                levelButtons[i].setEnabled(false);
+            } else {
+                levelButtons[i].setEnabled(true);
+                levelButtons[i].addMouseListener(levelButtons[i].mouseAdapter);
+            }
+        }
+    }
+
+    public void focusReleased()
+    {
+        for (int i = 0; i < this.getContentPane().getComponentCount(); i++){
+            this.getComponents()[i].setFocusable(false);
+        }
+        this.setFocusable(true);
+        this.requestFocus();
+    }
+    // listner для секретного уровня
     // уровни
-    private LevelWindow[]  levelWindows = new LevelWindow[DataBase.getNumberOfLevels()];
     // кнопка закрытия приложения
     private JButton closeButton = new JButton("Close");
     // кнопка возврата в меню
@@ -72,7 +97,6 @@ public class LevelSelectWindow extends JFrame {
     private LevelSelectWindow() {
         //настройки основного окна
         super("Пятнашки");
-
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         // настройки размера окна
@@ -120,17 +144,23 @@ public class LevelSelectWindow extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(10,10,10,10);
-
         //Добавление кнопок на панель
         for (int i = 0; i < levelButtons.length; i++) {
-            levelPanel.add(levelButtons[i]);
-            if (i % 2 == 1) {
-                levelPanel.add(levelButtons[i], gbc);
-                gbc.gridx = 0;
-                gbc.gridy++;
-            } else {
-                levelPanel.add(levelButtons[i], gbc);
-                gbc.gridx++;
+             {
+                if (i % 2 == 1) {
+                    levelPanel.add(levelButtons[i], gbc);
+                    gbc.gridx = 0;
+                    gbc.gridy++;
+                } else {
+                    levelPanel.add(levelButtons[i], gbc);
+                    gbc.gridx++;
+                }
+                if (!GameState.getIsAvailable(i)) {
+                    levelButtons[i].setEnabled(false);
+                } else {
+                    levelButtons[i].setEnabled(true);
+                    levelButtons[i].addMouseListener(levelButtons[i].mouseAdapter);
+                }
             }
         }
         // Обертка в JScrollPane
@@ -166,5 +196,19 @@ public class LevelSelectWindow extends JFrame {
             levelButtons[i].setIcon(new ImageIcon(DataBase.getLevelIcons()[i].getImage().getScaledInstance(levelButtons[i].getWidth(),levelButtons[i].getHeight(),Image.SCALE_SMOOTH)));
             levelButtons[i].setContentAreaFilled(false);
         }
+        focusReleased();
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                GameState.secretTyped(e.getKeyChar());
+                if (GameState.isCodeActivated()) {
+                    selectWindow.setVisible(false);
+                    DataBase.getSecretLevel().setVisible(true);
+                    DataBase.randomizeSecretPuzzle();
+
+                }
+            }
+        });
     }
 }

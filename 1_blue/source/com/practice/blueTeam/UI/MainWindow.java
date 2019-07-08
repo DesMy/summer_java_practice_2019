@@ -1,19 +1,24 @@
 package com.practice.blueTeam.UI;
 
+import com.practice.blueTeam.DataBase.DataBase;
+import com.practice.blueTeam.GameState.GameState;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
 public class MainWindow extends  JFrame {
-    private static LevelSelectWindow selectWindow = LevelSelectWindow.getSelectWindow();
+    public static LevelSelectWindow getSelectWindow() {
+        return selectWindow;
+    }
+    private static LevelSelectWindow selectWindow;
     private static MainWindow ui = null;
     private JButton newGame = new JButton("New Game");
     private JButton close = new JButton("Close");
-
-
-
 
     public static MainWindow getUI() {
         if (ui == null)
@@ -25,10 +30,9 @@ public class MainWindow extends  JFrame {
         ui.setVisible(true);
     }
     public void closeUI() { ui.setVisible(false); }
-    
-
     private MainWindow() {
         super("Пятнашки");
+        selectWindow = LevelSelectWindow.getSelectWindow();
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
