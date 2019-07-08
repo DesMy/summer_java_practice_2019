@@ -1,4 +1,4 @@
-package Practice.GUI;
+package Model;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    private Color color = Color.BLUE;
+    private Color color = Color.PINK;
     private int posX;
     private int posY;
     private static int size = 30;
@@ -18,6 +18,13 @@ public class Node {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
+    }
+
+    public Node(Node node) {
+        JPanel.getDefaultLocale();
+        this.name = node.name;
+        this.posX = node.posX;
+        this.posY = node.posY;
     }
 
     public int getDiameter() {

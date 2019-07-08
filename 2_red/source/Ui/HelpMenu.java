@@ -1,4 +1,4 @@
-package Practice.GUI;
+package Ui;
 
 import javax.swing.*;
 import java.awt.*;

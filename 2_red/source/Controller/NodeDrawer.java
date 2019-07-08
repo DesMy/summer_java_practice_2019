@@ -1,15 +1,22 @@
-package Practice.GUI;
+package Controller;
+
+import Model.Graph;
+import Model.Node;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class NodeDrawer extends JPanel {
 
-    Graph graph;
+    public Graph graph;
     /**
      * saves reference on graph
      */
     public NodeDrawer(Graph _graph){
+        graph = _graph;
+    }
+
+    public void setGraph(Graph _graph){
         graph = _graph;
     }
 
@@ -23,7 +30,7 @@ public class NodeDrawer extends JPanel {
             g.setColor(node.getColor());
             g.fillOval(node.getPosX(), node.getPosY(), node.getDiameter(), node.getDiameter());
             g.setFont(new Font("Arial", Font.BOLD, node.getDiameter()/3));
-            g.setColor(Color.RED);
+            g.setColor(Color.red);
             g.drawString(node.getName(), node.getPosX()+node.getDiameter()/4, node.getPosY() +node.getDiameter()/2+3);
         }
     }
