@@ -1,16 +1,25 @@
-package Practice.GUI;
+package Model;
 
-import javax.swing.*;
 import java.util.LinkedList;
 
 public class Graph {
 
-    LinkedList <Node> nodes;
-    LinkedList <Edge> edges;
+    public LinkedList <Node> nodes;
+    public LinkedList <Edge> edges;
 
     public Graph(){
         nodes = new LinkedList<Node>();
         edges = new LinkedList<Edge>();
+    }
+
+    public Graph(Graph graph){
+        this();
+        for (Node node : graph.nodes) {
+            this.nodes.add(node);
+        }
+        for (Edge edge : graph.edges) {
+            this.edges.add(new Edge(edge));
+        }
     }
 
     public void addNode(Node _node){
@@ -32,6 +41,7 @@ public class Graph {
         return edges.remove(edge);
     }
     public  LinkedList<Node> getNodes(){return nodes;}
+
     public void Clear(){
         nodes.clear();
         edges.clear();

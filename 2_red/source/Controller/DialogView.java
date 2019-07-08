@@ -1,4 +1,7 @@
-package Practice.GUI;
+package Controller;
+
+import Model.Edge;
+import Model.Node;
 
 import javax.swing.*;
 import java.awt.*;

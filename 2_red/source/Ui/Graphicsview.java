@@ -1,11 +1,15 @@
-package Practice.GUI;
+package Ui;
+
+import Controller.GraphDrawer;
+import Model.Edge;
+import Model.Graph;
+import Model.Node;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +38,28 @@ public class Graphicsview extends JFrame {
         super("Ford–Fulkerson");
         setSize(600, 400);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       /* this.addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                int xCentr=drawer.sizeWindow.x/2;
+                int yCentr=drawer.sizeWindow.y/2;
+                for (Node node:graph.getNodes()){
+                        node.setPosX(node.getPosX()-xCentr+(drawer.getSize().width/2));
+                        node.setPosY(node.getPosY()-yCentr+(drawer.getSize().height/2));
+                }
+                drawer.repaint();
+                System.out.println(drawer.getSize().width/2);
+                System.out.println(drawer.getSize().height/2);
+                System.out.println(xCentr);
+                System.out.println(yCentr);
+                System.out.println();
+
+
+                drawer.sizeWindow=new Point(drawer.getSize().width,drawer.getSize().height);
+
+            }
+        });*/
+
         contaner = this.getContentPane();
         contaner.setLayout(new BorderLayout());
         /**
@@ -64,23 +90,24 @@ public class Graphicsview extends JFrame {
             }
         });
         panelSlider.add(jSlider);
-        prevButton.addActionListener(new PrevCommand());
+        prevButton.addActionListener(new PrevCommand(drawer));
         panelSlider.add(prevButton);
         counter.setPreferredSize(new Dimension(30, 30));
         panelSlider.add(counter);
-        nextButton.addActionListener(new NextCommand());
+        nextButton.addActionListener(new NextCommand(drawer));
         panelSlider.add(nextButton);
         contaner.add(panelSlider, BorderLayout.SOUTH);
         /**
          *  button start
          */
         JPanel panelStart = new JPanel(new BorderLayout());
-        startButton.addActionListener(new StartCommand());
+        startButton.addActionListener(new StartCommand(graph, drawer));/*cюда передаешь нужные тебе данные*/
+        panelStart.add(startButton);
         contaner.add(panelStart, BorderLayout.NORTH);
         /**
          * graph
          */
-        contaner.add(drawer);
+        contaner.add(drawer, BorderLayout.CENTER);
     }
 
     private JMenu createHelpMenu(JFrame frame) {
@@ -126,8 +153,8 @@ public class Graphicsview extends JFrame {
         file.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (graph.getNodes().size()>0){
-                    JOptionPane.showMessageDialog(drawer,"Graph already exist!!!!!");
+                if (graph.getNodes().size() > 0) {
+                    JOptionPane.showMessageDialog(drawer, "Graph already exist!!!!!");
                     return;
                 }
                 JFileChooser fileopen = new JFileChooser();
@@ -165,8 +192,8 @@ public class Graphicsview extends JFrame {
         random.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (graph.getNodes().size()>0){
-                    JOptionPane.showMessageDialog(drawer,"Graph already exist!!!!!");
+                if (graph.getNodes().size() > 0) {
+                    JOptionPane.showMessageDialog(drawer, "Graph already exist!!!!!");
                     return;
                 }
                 result = CreationRandomAdjacencyMatrix();
@@ -177,6 +204,11 @@ public class Graphicsview extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 graph.Clear();
+                drawer.graphList.clear();
+                drawer.edgeDrawer.graph.Clear();
+                drawer.nodeDrawer.graph.Clear();
+                drawer.iteration = 0;
+                drawer.setGraph(graph);
                 drawer.repaint();
             }
         });
@@ -188,31 +220,27 @@ public class Graphicsview extends JFrame {
         float alpha = 360 / result.length;
         float radius = 100;
         float x, y;
-        node[0] = new Node("1" + 0, 150, 20);
+        node[0] = new Node("1" + 0, drawer.getSize().width / 2 - 12, drawer.getSize().height / 2 - 116);
         graph.addNode(node[0]);
+        System.out.println(drawer.getSize().height / 2);
+        System.out.println(drawer.getSize().width / 2);
         for (int i = 1; i < result.length; i++) {
             if (i % 2 == 0) {
                 float radian = (float) (alpha * (i / 2) * pi / 180);
                 float horda = 2 * radius * (float) Math.sin(radian / 2);
                 y = horda * (float) Math.sin(pi * (180 - alpha * (i / 2)) / 360);
                 x = (float) Math.sqrt((horda * horda) - (y * y));
-                node[i - 1] = new Node("1" + (i - 1), Math.round(150 - y), Math.round(20 + x));
+                node[i - 1] = new Node("1" + (i - 1), drawer.getSize().width / 2 + Math.round(-12 - y), drawer.getSize().height / 2 + Math.round(-116 + x));
                 graph.addNode(node[i - 1]);
-                node[i] = new Node("1" + i, Math.round(150 + y), Math.round(20 + x));
+                node[i] = new Node("1" + i, drawer.getSize().width / 2 + Math.round(-12 + y), drawer.getSize().height / 2 + Math.round(-116 + x));
                 graph.addNode(node[i]);
             }
         }
         if (result.length % 2 == 0) {
-            node[result.length - 1] = new Node("1" + (result.length - 1), 150, 220);
+            node[result.length - 1] = new Node("1" + (result.length - 1), drawer.getSize().width / 2 - 12, drawer.getSize().height / 2 + 84);
             graph.addNode(node[result.length - 1]);
         }
         drawer.repaint();
-        for (int[] ints : result) {
-            for (int anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println();
-        }
         for (int i = 0; i < result.length; i++)
             for (int j = 0; j < result.length; j++)
                 if (result[i][j] != 0)
@@ -220,20 +248,24 @@ public class Graphicsview extends JFrame {
         drawer.repaint();
     }
 
+
     public int[][] CreationRandomAdjacencyMatrix() {
         final Random random = new Random();
-        int matrix_dimension = random.nextInt(6) + 5;
+        int matrix_dimension = random.nextInt(4) + 4;
         n = matrix_dimension;
         int[][] adjacency_matrix = new int[matrix_dimension][matrix_dimension];
         int edge_weight_1;
         for (int i = 0; i < matrix_dimension; i++) {
             for (int j = i; j < matrix_dimension; j++) {
                 edge_weight_1 = random.nextInt(10);
-                if (i != j && edge_weight_1 % 5 == 0)
-                    adjacency_matrix[i][j] = edge_weight_1;
-                else
+                if (i != j) {
+                    if (j - i == 1) {
+                        adjacency_matrix[i][j] = random.nextInt(9) + 1;
+                    } else if (edge_weight_1 % 5 != 0)
+                        adjacency_matrix[i][j] = edge_weight_1;
+                } else
                     adjacency_matrix[i][j] = 0;
-                if (adjacency_matrix[i][j] == 0 && i != j && i != 0)
+                if (adjacency_matrix[i][j] == 0 && i != j)
                     adjacency_matrix[j][i] = random.nextInt(10);
             }
         }
