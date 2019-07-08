@@ -21,7 +21,7 @@ public class BridgeFinder extends Graph {
         bridges = new Vector();
         this.matrix = matrix;
         vertexList = new int[matrix[0].length];
-        for(int i=0; i < vertexList.length; i++){
+        for(int i = 0; i < vertexList.length; i++){
             vertexList[i] = i;
         }
 
@@ -57,7 +57,8 @@ public class BridgeFinder extends Graph {
                 DFS(i, v);
                 fup[v] = Math.min(fup[v], fup[i]);
                 if(fup[i] > tin[v]){
-                    bridges.add(new Point(v, i));
+                    this.Bridge = true;
+                    bridges.add(new Point(++v, ++i));
                 }
             }
         }
