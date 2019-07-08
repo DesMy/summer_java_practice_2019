@@ -61,6 +61,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         drawingPanel.setLayout(new GridLayout(1, 1));
         graphDisplay = new GraphDisplayFrame(this);
         drawingPanel.add(graphDisplay);
+        graphDisplay.setName("graphDisplay");
         graphDisplay.setBackground(Color.WHITE);
         initContextMenuPanel();
         initContextMenuEdge();
@@ -213,7 +214,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
     private void initContextMenuPanel() {
         contextMenuPanel = new JPopupMenu();
         JMenuItem addVertexMI = new JMenuItem("Add vertex");
-
+ addVertexMI.setName("addVertexMI");
         addVertexMI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -364,6 +365,10 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
 
         lblRunStatus.setText("Run Status");
 
+        btnClear.setName("btnClear"); // NOI18N
+
+        btnRun.setName("btnRun"); // NOI18N
+
         btnPrevStep.setText("Previous");
         btnPrevStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -390,7 +395,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
                 .addContainerGap()
                 .addComponent(btnPrevStep)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblStep, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                .addComponent(lblStep, javax.swing.GroupLayout.PREFERRED_SIZE, 110, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNextStep, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

@@ -169,8 +169,14 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnClear">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="btnClear" noResource="true"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnRun">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="btnRun" noResource="true"/>
+          </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="panelStepNav">
 
