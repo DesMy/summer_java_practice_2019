@@ -6,7 +6,6 @@ import Model.Node;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.*;
 import java.util.LinkedList;
 
 public class EdgeDrawer extends JPanel {

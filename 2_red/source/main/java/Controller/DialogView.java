@@ -2,7 +2,6 @@ package Controller;
 
 import Model.Edge;
 import Model.Node;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -106,7 +105,6 @@ class InitEdge extends JDialog {
                     drawer.graph.addEdge(new Edge(start, end, Integer.parseInt(textField.getText()), Integer.parseInt(textField1.getText())));
 
                 }
-
                 start.changeColor(colorStart);
                 end.changeColor(colorEnd);
                 drawer.repaint();

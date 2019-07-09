@@ -6,14 +6,14 @@ public class Edge {
     private Color color = Color.BLACK;
     public Node startNode;
     public Node endNode;
-    public Integer count1 = 0;
-    public Integer count2 = 0;
+    public Integer weight = 0;
+    public Integer bandwidth = 0;
 
-    public Edge(Node startNode, Node endNode, int count1, int count2) {
+    public Edge(Node startNode, Node endNode, int weight, int bandwidth) {
         this.startNode = startNode;
         this.endNode = endNode;
-        this.count1 = count1;
-        this.count2 = count2;
+        this.weight = weight;
+        this.bandwidth = bandwidth;
         startNode.addListEdge(this);
         endNode.addListEdge(this);
     }
@@ -21,8 +21,8 @@ public class Edge {
     public Edge(Edge edge) {
         this.startNode = edge.startNode;
         this.endNode = edge.endNode;
-        this.count1 = edge.count1;
-        this.count2 = edge.count2;
+        this.weight = edge.weight;
+        this.bandwidth = edge.bandwidth;
         startNode.addListEdge(this);
         endNode.addListEdge(this);
     }
@@ -45,11 +45,11 @@ public class Edge {
     }
 
     public Integer getWeight() {
-        return count1;
+        return weight;
     }
 
     public Integer getBandwidth() {
-        return count2;
+        return bandwidth;
     }
 
 }

@@ -20,13 +20,6 @@ public class Node {
         this.posY = posY;
     }
 
-    /*public Node(Node node) {
-        JPanel.getDefaultLocale();
-        this.name = node.name;
-        this.posX = node.posX;
-        this.posY = node.posY;
-    }*/
-
     public int getDiameter() {
         return size;
     }

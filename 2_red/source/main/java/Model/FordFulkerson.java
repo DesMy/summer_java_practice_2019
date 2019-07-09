@@ -1,24 +1,19 @@
-package Ui;
+package Model;
 
 import Controller.GraphDrawer;
-import Model.Edge;
-import Model.Graph;
+import Ui.Graphicsview;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.LinkedList;
 
-public abstract class ButtonCommand implements ActionListener {
-    public abstract void actionPerformed(ActionEvent e);
-}
-
-class StartCommand extends ButtonCommand {
-    Graph graph;
-    GraphDrawer drawer;
-
+public class FordFulkerson {
+   public Graph graph;
+   public GraphDrawer drawer;
+   Graphicsview frame;
     final int WHITE = 0;
     final int GREY = 1;
     final int BLACK = 2;
+
 
     private int[][] flow; // Матрица потока
     private int[] color;      // Цвета для вершин
@@ -27,9 +22,16 @@ class StartCommand extends ButtonCommand {
     private int[] q;
     public int [][] result;
 
-    public StartCommand(Graph graph, GraphDrawer drawer) {
+    public FordFulkerson(Graph graph, GraphDrawer drawer, Graphicsview frame) {
         this.graph = graph;
         this.drawer = drawer;
+        this.frame = frame;
+    }
+
+    public  FordFulkerson(int[][] array, Graph graph, GraphDrawer graphDrawer) {
+        this.result = array;
+        this.graph = graph;
+        this.drawer = graphDrawer;
     }
 
     private int min(int x, int y)
@@ -89,21 +91,30 @@ class StartCommand extends ButtonCommand {
 
         LinkedList<Edge> list = new LinkedList<>(); // список измененных на данной итерации ребер
         for (int i = 0; i < prev.edges.size(); i++) {
-            if (prev.edges.get(i).count1 != this.graph.edges.get(i).count1){ // если веса не совпали
+            if (prev.edges.get(i).weight != this.graph.edges.get(i).weight){ // если веса не совпали
                 list.addLast(prev.edges.get(i));
             }
         }
 
         return list;
     }
-
+   void  setLog(LinkedList<Edge> list){
+        if (list.size() != 0) {
+            String log = "";
+            for (Edge edge : list) {
+                log += edge.getStartNode().getName() + "-(" + edge.getWeight() + "|" + edge.getBandwidth() + ")->";
+            }
+            log += list.getLast().getEndNode().getName();
+            frame.logString.addString(log);
+        }
+   }
     void colorEdges(LinkedList<Edge> list, Color color){
         for (Edge edge : list) {
             edge.changeColor(color);
         }
     }
 
-    int maxFlow(int source, int stock)
+   public int maxFlow(int[][] result, int source, int stock)
     {
         flow = new int[result.length][result.length]; // Матрица потока
         color = new int[result.length];      // Цвета для вершин
@@ -132,6 +143,7 @@ class StartCommand extends ButtonCommand {
             Graph prev = new Graph(this.graph); // запишем в граф предыдущее состояние
             matrixToGraph(); // обновим состояние графа
             colorEdges(changedEdges(prev), Color.ORANGE); // красим изменившиеся ребра в красный
+            setLog(changedEdges(prev));
             drawer.graphList.add(prev); // сохраним в список состояний
             drawer.iteration++;
             drawer.setGraph(drawer.graphList.getLast());
@@ -159,7 +171,7 @@ class StartCommand extends ButtonCommand {
                     vertex_counter++;
                 }
                 if (vertex_counter == 2){
-                    result[index_i][index_j] = graph.edges.get(index_edges).count2;
+                    result[index_i][index_j] = graph.edges.get(index_edges).bandwidth;
                     break;
                 }
                 index_nodes++;
@@ -185,7 +197,7 @@ class StartCommand extends ButtonCommand {
                     vertex_counter++;
                 }
                 if (vertex_counter == 2){
-                    graph.edges.get(index_edges).count1 = flow[index_i][index_j];
+                    graph.edges.get(index_edges).weight = flow[index_i][index_j];
                     break;
                 }
                 index_nodes++;
@@ -193,55 +205,6 @@ class StartCommand extends ButtonCommand {
             vertex_counter = 0;
             index_nodes = 0;
             index_edges++;
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        graphToMatrix();
-        int max_flow = maxFlow(0, result.length - 1);
-        System.out.println(max_flow);
-        matrixToGraph();
-        drawer.repaint();
-        drawer.updateUI();
-    }
-}
-
-
-class PrevCommand extends ButtonCommand {
-
-    GraphDrawer drawer;
-
-    public PrevCommand(GraphDrawer drawer){
-        this.drawer = drawer;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (!drawer.graphList.isEmpty()){
-            if (drawer.iteration - 1 >= 0) // меняем индекс состояния в списке
-                --drawer.iteration;
-
-            drawer.setGraph(drawer.graphList.get(drawer.iteration));
-            drawer.repaint();
-        }
-
-    }
-}
-
-class NextCommand extends ButtonCommand {
-
-    GraphDrawer drawer;
-
-    public NextCommand(GraphDrawer drawer){
-        this.drawer = drawer;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (!drawer.graphList.isEmpty()){
-            if (drawer.iteration + 1 < drawer.graphList.size()) // меняем индекс состояния в списке
-                ++drawer.iteration;
-
-            drawer.setGraph(drawer.graphList.get(drawer.iteration));
-            drawer.repaint();
         }
     }
 }
