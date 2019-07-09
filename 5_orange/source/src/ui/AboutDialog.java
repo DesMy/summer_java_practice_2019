@@ -27,6 +27,8 @@ public class AboutDialog extends javax.swing.JDialog {
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setName("dialogAbout");
+        txtAbout.setEditable(false);
         try {
             File file = new File("about.html");
             FileInputStream fis = new FileInputStream(file);
@@ -37,10 +39,8 @@ public class AboutDialog extends javax.swing.JDialog {
             String str = new String(data, "UTF-8");
             txtAbout.setContentType("text/html");
             txtAbout.setText(str);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
+            txtAbout.setText("Help file missing");
         }
     }
 
@@ -54,6 +54,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         btnDone = new javax.swing.JButton();
+        btnDone.setName("btnDone");
         jScrollPane2 = new javax.swing.JScrollPane();
         txtAbout = new javax.swing.JTextPane();
 
@@ -71,24 +72,24 @@ public class AboutDialog extends javax.swing.JDialog {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 323, Short.MAX_VALUE)
-                        .addComponent(btnDone)))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jScrollPane2)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(0, 323, Short.MAX_VALUE)
+                                                .addComponent(btnDone)))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDone)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDone)
+                                .addContainerGap())
         );
 
         pack();

@@ -213,6 +213,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
 
     private void initContextMenuPanel() {
         contextMenuPanel = new JPopupMenu();
+        contextMenuPanel.setName("contextMenuPanel");
         JMenuItem addVertexMI = new JMenuItem("Add vertex");
  addVertexMI.setName("addVertexMI");
         addVertexMI.addActionListener(new ActionListener() {
@@ -234,7 +235,7 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         });
 
         contextMenuPanel.add(addVertexMI);
-
+        this.add(contextMenuPanel);
     }
 
     private void showPanelContextMenu(MouseEvent e) {
@@ -343,12 +344,17 @@ public class MainWindow extends javax.swing.JFrame implements VertexActionListen
         lblStep = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         mnFile = new javax.swing.JMenu();
+        mnFile.setName("mnFile");
         mnLoad = new javax.swing.JMenuItem();
+        mnLoad.setName("mnLoad");
         mnSave = new javax.swing.JMenuItem();
+        mnSave.setName("mnSave");
         separator1 = new javax.swing.JPopupMenu.Separator();
         mnExit = new javax.swing.JMenuItem();
         mnAbout = new javax.swing.JMenu();
+        mnAbout.setName("mnAbout");
         mnAboutProg = new javax.swing.JMenuItem();
+        mnAboutProg.setName("mnAboutProg");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(50, 50));
