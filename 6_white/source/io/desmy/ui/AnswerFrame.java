@@ -1,39 +1,46 @@
 package io.desmy.ui;
 
 import io.desmy.project.*;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AnswerFrame extends JFrame {
-    public AnswerFrame(AhoCor test1, Bohr testBohr) {
+    public AnswerFrame(AhoCor test1, Bohr testBohr, JButton open) {
         super("Результат");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(null);
 
-        panel.add(Box.createVerticalGlue());
         JTextArea textArea = new JTextArea(10, 1);
+        textArea.setEditable(false);
         textArea.setCaretPosition(0);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        panel.add(scrollPane, BorderLayout.NORTH);
+
+        scrollPane.setSize(new Dimension(400,200));
+        panel.add(scrollPane);
         test1.answer.forEach((key, value) -> {
-
-            textArea.append("text position: [" + (value.getPosition() - testBohr.getPair().get(value.getTemplate()).getLen())  + "] ");
-
-            textArea.append("template: [" + testBohr.getPair().get(value.getTemplate()).getShape() + "]\n");
-
+            textArea.append("[" + (value.getPosition() - testBohr.getPair().get(value.getTemplate()).getLen() + 1)  + " - " + testBohr.getPair().get(value.getTemplate()).getShape() + "]\n");
         });
-        textArea.append("\n");
-        panel.add(Box.createRigidArea(new Dimension(10, 10)));
 
-        getContentPane().add(panel);
-
-        setPreferredSize(new Dimension(400, 200));
-        pack();
+        JButton prev = new JButton("Назад");
+        prev.setBounds(100,205, 200, 20);
+        prev.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                open.doClick();
+                dispose();
+            }
+        });
+        panel.add(prev);
+        String OS = System.getProperty("os.name").toLowerCase();
+        setBounds(300, 300, 400+15*(OS.contains("win") ? 1:0), 230+39*(OS.contains("win") ? 1:0));
+        setResizable(false);
+        add(panel);
         setLocationRelativeTo(null);
         setVisible(true);
     }

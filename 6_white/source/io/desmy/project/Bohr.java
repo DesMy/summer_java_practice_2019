@@ -13,7 +13,7 @@ public class Bohr {
         private String shape;
 
         public Pair(String str){
-            shape = new String(str);
+            shape = str;
             len = shape.length();
         }
 
@@ -40,7 +40,7 @@ public class Bohr {
     private void oldNode(char ch, boolean isEndOfShape) {
         now = now.getChild(ch);
         if(isEndOfShape) {
-            now.getChild(ch).setIndex(index);
+            now.setIndex(index);
             now = head;
         }
     }
@@ -66,7 +66,7 @@ public class Bohr {
     public void stringToPair(String str) {
         StringBuilder text = new StringBuilder(str);
         text.append(' ');
-        int k = 0, j = 0;
+        int j, k = 0;
         for(int i = 0; i < text.length(); i++)
             if(text.charAt(i) != ' ') {
                 for (j = i; text.charAt(j) != ' '; j++);
@@ -75,11 +75,12 @@ public class Bohr {
             }
     }
 
+
     public HashMap<Integer, Pair> getPair() {
         return pair;
     }
 
-    public Node getHead() { return head; };
+    public Node getHead() { return head; }
     public void setNow(Node n) { now = n; }
     public Node getNow() { return now; }
 }

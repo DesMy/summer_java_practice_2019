@@ -15,4 +15,6 @@ public class Point {
     public int getY() {
         return pointY;
     }
+    public void setX(int X) { pointX = X; }
+    public void setY(int Y) { pointY = Y; }
 }

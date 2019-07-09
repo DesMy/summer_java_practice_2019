@@ -25,21 +25,12 @@ public class Node {
         indexOfShape = index;
     }
 
-    public Node getLastTransfer() {
-        Node last = null;
-        for(Node item : go.values())
-            last = item;
-        return last;
-    }
-
     public HashMap<Character, Node> getNextLevelNode() { return nextLevelNode; }
     public int getIndex() { return indexOfShape; }
     public void setTransfer(Node child) {  go.put(child.getChar(), child); }
     public Node getChild(char ch) { return nextLevelNode.get(ch);  }
     public Node getTransfer(char ch) { return go.get(ch); }
-    public void setIndex(int index) {
-        indexOfShape = index;
-    }
+    public void setIndex(int index) { indexOfShape = index; }
     public boolean childExist(char ch) { return nextLevelNode.get(ch) != null; }
     public boolean transferExist(char ch) { return go.get(ch) != null; }
 

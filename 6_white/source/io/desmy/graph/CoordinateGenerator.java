@@ -7,7 +7,6 @@ public class CoordinateGenerator {
     private Point headPoint;
     private int diam;
     private HashMap<Node, Point> list;
-    private Node now;
     private Node head;
     private int offset = 50;
     private HashMap<Integer, Integer> off;
@@ -17,7 +16,7 @@ public class CoordinateGenerator {
         list = new HashMap<>();
         headPoint = new Point(diam, diam);
         head = graphic.getHead();
-        diam = 15;
+        diam = 25;
         list.put(head, headPoint);
         off.put(1, 0);
         ForEach(head, 1);

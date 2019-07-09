@@ -9,9 +9,13 @@ import java.util.HashMap;
 
 public class AhoCor {
 
+    public int counter = 0;
+    public HashMap<Integer, resultPair> answer;
 
-
-
+    public AhoCor(){
+        answer = new HashMap<>();
+        way = new HashMap<>();
+    }
 
     public class resultPair {
         int position;
@@ -25,11 +29,6 @@ public class AhoCor {
         public int getPosition() { return position; }
         public int getTemplate() { return template; }
     }
-    public HashMap<Integer, resultPair> answer;
-    public AhoCor(){
-        answer = new HashMap<>();
-    }
-    int counter = 0;
 
     public void processText(String text, Bohr trie) {
         Node cur = trie.getHead();
@@ -49,12 +48,12 @@ public class AhoCor {
         }
     }
 
+    public HashMap<Integer, Node> way;
     public void stepRight(char ch, Bohr trie, int i) {
+        way.put(i, trie.getNow());
         Node cur = getLink(trie.getNow(), trie, ch);
-        if(cur == trie.getNow()) {
-            cur = trie.getHead();
+        if(cur == trie.getHead())
             return;
-        }
         trie.setNow(cur);
         Node dsl = cur;
         do {
@@ -73,9 +72,9 @@ public class AhoCor {
      * @param cur - текущий узел
      * @param trie - бор
      * @param c - символ ребенка
-     * @return
+     * @return Node
      */
-    public Node getLink(Node cur, Bohr trie, char c) {
+    private Node getLink(Node cur, Bohr trie, char c) {
         if (!cur.transferExist(c)){
             if (cur.childExist(c)){
                 cur.setTransfer(cur.getChild(c));
@@ -99,7 +98,7 @@ public class AhoCor {
      * Пока не найден ребенок по символу
      * исследуем суффиксы пока не дошли до корня
      */
-    public Node getSuffLink(Node cur, Bohr trie) {
+    private Node getSuffLink(Node cur, Bohr trie) {
         if (cur.suffixLink == null){
             if (cur == trie.getHead() || cur.parentNode == trie.getHead()){
                 cur.suffixLink = trie.getHead();
@@ -114,7 +113,7 @@ public class AhoCor {
     /* Поиск сжатой суффиксной ссылки
      * пока очередная суффиксная ссылка не привела в терминал или корень
      */
-    public Node getDictSuffLink(Node cur, Bohr trie) {
+    private Node getDictSuffLink(Node cur, Bohr trie) {
         if (cur.goodSuffixLink == null)
         {
             if (getSuffLink(cur, trie).indexOfShape != -1){
