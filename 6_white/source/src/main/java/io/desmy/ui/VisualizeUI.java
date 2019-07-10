@@ -97,15 +97,15 @@ public class VisualizeUI extends JFrame {
                     while(aho.counter > 0 && aho.answer.get(aho.counter - 1).getPosition() == i+1) {
                         aho.answer.remove(--aho.counter);
                     }
-                        StringBuilder no = new StringBuilder("");
-                        aho.answer.forEach((key, value) -> {
-                            no.append("[");
-                            no.append(value.getPosition() - testBohr.getPair().get(value.getTemplate()).getLen() + 1);
-                            no.append(" - ");
-                            no.append(testBohr.getPair().get(value.getTemplate()).getShape());
-                            no.append("]\n");
-                        });
-                        forResult.setText(no.toString());
+                    StringBuilder no = new StringBuilder("");
+                    aho.answer.forEach((key, value) -> {
+                        no.append("[");
+                        no.append(value.getPosition() - testBohr.getPair().get(value.getTemplate()).getLen() + 1);
+                        no.append(" - ");
+                        no.append(testBohr.getPair().get(value.getTemplate()).getShape());
+                        no.append("]\n");
+                    });
+                    forResult.setText(no.toString());
 
                     graph.rePaint();
                 }
