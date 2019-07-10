@@ -127,8 +127,9 @@ public class StartFrame extends JFrame {
 
         add(panel);
         String OS = System.getProperty("os.name").toLowerCase();
-        setBounds(300, 300, 400+16*(OS.contains("win") ? 1:0), 310+39*(OS.contains("win") ? 1:0));
+        setBounds(300, 300, 400+16*(OS.contains("win") ? 1:0), 349);
         setLocationRelativeTo(null);
+        setResizable(false);
         setVisible(true);
     }
 }

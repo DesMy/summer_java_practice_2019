@@ -12,7 +12,7 @@ public class Graph extends JPanel implements MouseListener, ActionListener, Mous
     private Point maxSize;
     public Graph(Bohr for_head) {
         gen = new CoordinateGenerator(for_head);
-        maxSize = new Point(270,270);
+        maxSize = new Point(271,271);
         gen.getList().forEach((key, value) -> {
             if(value.getY() > maxSize.getY())
                 maxSize.setY(value.getY());

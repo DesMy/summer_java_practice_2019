@@ -38,7 +38,7 @@ public class AnswerFrame extends JFrame {
         });
         panel.add(prev);
         String OS = System.getProperty("os.name").toLowerCase();
-        setBounds(300, 300, 400+15*(OS.contains("win") ? 1:0), 230+39*(OS.contains("win") ? 1:0));
+        setBounds(300, 300, 400+15*(OS.contains("win") ? 1:0), 269);
         setResizable(false);
         add(panel);
         setLocationRelativeTo(null);

@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class StringProcessor {
     static public String stringCorrecting(String str) {
         HashMap<String, Integer> pr = new HashMap<>();
-        StringBuilder text = new StringBuilder(str.replaceAll("[^A-Za-zА-Яа-я]", " "));
+        StringBuilder text = new StringBuilder(str.replaceAll("[^A-Za-zА-Яа-я0-9]", " "));
         text.append(' ');
         int j, k = 0;
         for(int i = 0; i < text.length(); i++)
@@ -24,7 +24,7 @@ public class StringProcessor {
 
     static public String stringDelShape(String str, String del) {
         HashMap<String, Integer> pr = new HashMap<>();
-        StringBuilder text = new StringBuilder(str.replaceAll("[^A-Za-zА-Яа-я]", " "));
+        StringBuilder text = new StringBuilder(str.replaceAll("[^A-Za-zА-Яа-я0-9]", " "));
         text.append(' ');
         int j, k = 0;
         for(int i = 0; i < text.length(); i++)
@@ -35,7 +35,7 @@ public class StringProcessor {
             }
 
         HashMap<String, Integer> prDel = new HashMap<>();
-        StringBuilder textDel = new StringBuilder(del.replaceAll("[^A-Za-zА-Яа-я]", " "));
+        StringBuilder textDel = new StringBuilder(del.replaceAll("[^A-Za-zА-Яа-я0-9]", " "));
         textDel.append(' ');
         k = 0;
         for(int i = 0; i < textDel.length(); i++)

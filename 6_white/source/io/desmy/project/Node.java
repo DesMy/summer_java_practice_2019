@@ -12,7 +12,7 @@ public class Node {
     public Node suffixLink;  //Пустое значение
     public Node goodSuffixLink;  //Пустое значение
 
-    public Node() { indexOfShape = -1; }
+    public Node() { indexOfShape = -1; parentChar = ' '; }
     public Node(Node parent, char ch) {
         this();
         parentNode = parent;
@@ -26,6 +26,7 @@ public class Node {
     }
 
     public HashMap<Character, Node> getNextLevelNode() { return nextLevelNode; }
+    public LinkedHashMap<Character, Node> getGo() { go.remove(' '); return go; }
     public int getIndex() { return indexOfShape; }
     public void setTransfer(Node child) {  go.put(child.getChar(), child); }
     public Node getChild(char ch) { return nextLevelNode.get(ch);  }

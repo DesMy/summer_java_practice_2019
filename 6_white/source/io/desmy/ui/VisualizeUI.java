@@ -17,7 +17,7 @@ public class VisualizeUI extends JFrame {
         super("Визуализация алгоритма Ахо-Корасик");
 
         String OS = System.getProperty("os.name").toLowerCase();
-        setBounds(300, 300, 600+16*(OS.contains("win") ? 1:0), 330+39*(OS.contains("win") ? 1:0));
+        setBounds(300, 300, 600+16*(OS.contains("win") ? 1:0), 369);
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,8 +81,22 @@ public class VisualizeUI extends JFrame {
                     if(i==0)
                         forText.setText(textArea1.getText());
                     aho.way.remove(i);
-                    if(aho.answer.get(aho.counter - 1).getPosition() == i+1) {
+
+                    if(i > 0 && i < textArea1.getText().length()) {
+                        StringBuilder tex = new StringBuilder(textArea1.getText());
+                        StringBuilder buf = new StringBuilder("");
+
+                        buf.append(tex.substring(0,i-1));
+                        buf.append("[");
+                        buf.append(tex.charAt(i-1));
+                        buf.append("]");
+                        buf.append(tex.substring(i, tex.length()));
+
+                        forText.setText(buf.toString());
+                    }
+                    while(aho.counter > 0 && aho.answer.get(aho.counter - 1).getPosition() == i+1) {
                         aho.answer.remove(--aho.counter);
+                    }
                         StringBuilder no = new StringBuilder("");
                         aho.answer.forEach((key, value) -> {
                             no.append("[");
@@ -92,19 +106,7 @@ public class VisualizeUI extends JFrame {
                             no.append("]\n");
                         });
                         forResult.setText(no.toString());
-                        if(i > 0 && i < textArea1.getText().length()) {
-                            StringBuilder tex = new StringBuilder(textArea1.getText());
-                            StringBuilder buf = new StringBuilder("");
 
-                            buf.append(tex.substring(0,i-1));
-                            buf.append("[");
-                            buf.append(tex.charAt(i));
-                            buf.append("]");
-                            buf.append(tex.substring(i, tex.length()));
-
-                            forText.setText(buf.toString());
-                        }
-                    }
                     graph.rePaint();
                 }
                 else
@@ -149,7 +151,7 @@ public class VisualizeUI extends JFrame {
 
                     buf.append(tex.substring(0,i-1));
                     buf.append("[");
-                    buf.append(tex.charAt(i));
+                    buf.append(tex.charAt(i-1));
                     buf.append("]");
                     buf.append(tex.substring(i, tex.length()));
 
