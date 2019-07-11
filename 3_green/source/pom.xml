@@ -41,7 +41,81 @@
           </archive>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>default-resources</id>
+            <phase>none</phase>
+          </execution>
+
+          <execution>
+            <id>default-testResources</id>
+            <phase>none</phase>
+          </execution>
+
+          <execution>
+            <id>copy-image-resources</id>
+            <phase>process-classes</phase>
+            <goals>
+                <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/ui/images</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/images/ui</directory>
+                  <includes>
+                    <include>**/*.png</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>copy-input-resources</id>
+            <phase>process-classes</phase>
+            <goals>
+               <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/resources/input</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/input</directory>
+                  <includes>
+                    <include>**/*.txt</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>copy-docs-resources</id>
+            <phase>process-classes</phase>
+            <goals>
+               <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/ui/docs/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/docs/ui</directory>
+                  <includes>
+                    <include>**/*.html</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
 </project>
