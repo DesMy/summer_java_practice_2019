@@ -6,9 +6,9 @@ import java.util.ArrayDeque;
 abstract class BFS 
 {
 
-    public static String findPath(Vertex from, Vertex to) {
+    static String findPath(Vertex from, Vertex to) {
         class VertexPair {
-            VertexPair(Vertex cur, Vertex par) {
+            private VertexPair(Vertex cur, Vertex par) {
                 current = cur;
                 parent = par;
             }
@@ -18,9 +18,9 @@ abstract class BFS
 
 
         StringBuilder out = new StringBuilder();
-        ArrayList <Vertex> checked = new ArrayList<Vertex>();
-        ArrayList <VertexPair> pairs = new ArrayList<VertexPair>();
-        ArrayDeque <Vertex> vertexQueue = new ArrayDeque<Vertex>();
+        ArrayList <Vertex> checked = new ArrayList<>();
+        ArrayList <VertexPair> pairs = new ArrayList<>();
+        ArrayDeque <Vertex> vertexQueue = new ArrayDeque<>();
 
         pairs.add(new VertexPair(from, null));
         checked.add(from);
@@ -44,10 +44,10 @@ abstract class BFS
             }
  
             for(Edge curEdge: curVertex.outEdges()) {
-                if(curEdge.getCapacity() != 0 && checked.indexOf(curEdge.dest()) == -1) {
-                    pairs.add(new VertexPair(curEdge.dest(), curVertex));
-                    checked.add(curEdge.dest());
-                    vertexQueue.add(curEdge.dest());
+                if(curEdge.getCapacity() != 0 && checked.indexOf(curEdge.to()) == -1) {
+                    pairs.add(new VertexPair(curEdge.to(), curVertex));
+                    checked.add(curEdge.to());
+                    vertexQueue.add(curEdge.to());
                 }
             }
         }

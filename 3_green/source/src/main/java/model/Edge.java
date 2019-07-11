@@ -1,40 +1,40 @@
 package model;
 
-public class Edge
+class Edge
 {
-    Edge(Vertex dest, int weight) {
-        capacity = weight;
-        this.dest = dest;
+    Edge(Vertex from, Vertex to, int capacity, int flow) {
+        this.from = from;
+        this.to = to;
+        this.capacity = capacity;
+        this.flow = flow;
     }
  
     //Getters:
-    public Vertex dest() {
-        return dest;
+    public Vertex from() {
+        return from;
     }
- 
+    public Vertex to() {
+        return to;
+    }
     public int getCapacity() {
         return capacity;
     }
-
     public int getFlow() {
         return flow;
     }
  
     //Setter:
-    public void changeCapacity(int value) {
+    void changeCapacity(int value) {
         if (capacity < value) {
             throw new IllegalArgumentException();
         }
         capacity -= value;
         flow += value;
     }
- 
-    public void reset() {
-            capacity += flow;
-            flow = 0;
-    }
- 
+
+
+    private Vertex from;
+    private Vertex to;
     private int capacity;
     private int flow;
-    private Vertex dest;
 }

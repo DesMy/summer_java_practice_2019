@@ -1,38 +1,99 @@
 package ui;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
 
-public class GraphicEdge extends GraphicElement
+public class GraphicEdge
 {
+	private final GraphicVertex from;
+	private final GraphicVertex to;
+	private int capacity;
+	private int flow;
+
+
 	public GraphicEdge(GraphicVertex from, GraphicVertex to, int capacity, int flow) {
-		super(new Point((from.p.x + to.p.x)/2, (from.p.y + to.p.y)/2));
 		this.from = from;
 		this.to = to;
 		this.capacity = capacity;
 		this.flow = flow;
 	}
 
-	@Override
 	public void draw(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.drawLine(from.p.x, from.p.y, to.p.x, to.p.y);
-		double arc = Math.atan2(from.p.x - to.p.x, from.p.y - to.p.y);
-		g.drawLine(to.p.x, to.p.y, (int)(to.p.x+20*Math.sin(arc + Math.PI/12)), (int)(to.p.y+20*Math.cos(arc + Math.PI/12)));
-		g.drawLine(to.p.x, to.p.y, (int)(to.p.x+20*Math.sin(arc - Math.PI/12)), (int)(to.p.y+20*Math.cos(arc - Math.PI/12)));
-		g.drawString(String.format("{%d/%d}", capacity, flow), (from.p.x + to.p.x)/2, (from.p.y + to.p.y)/2);
-	}
-	@Override
-	public void updatePosition(Point d) {
-		from.p.x += d.x;
-		from.p.y += d.y;
-		to.p.x += d.x;
-		to.p.y += d.y;
-		p.x += d.x;
-		p.y += d.x;
+		if(getFlow() != 0)  g.setColor(Color.RED);
+		else g.setColor(Color.BLACK);
+
+		double angle = Math.atan2(to.getP().y - from.getP().y, to.getP().x - from.getP().x);
+		double offsetX = 10*Math.cos(angle);
+		double offsetY = 10*Math.sin(angle);
+		int distance = (int)Math.round(from.getP().distance(to.getP()));
+
+		AffineTransform t = new AffineTransform();
+		t.setToIdentity();
+		t.translate(from.getP().x, from.getP().y);
+		t.rotate(angle);
+		Point2D p = new Point(distance/2, 30);
+		t.transform(p, p);
+		Graphics2D g2d = (Graphics2D)g;
+		QuadCurve2D qc2d = new QuadCurve2D.Double(
+				from.getP().x,
+				from.getP().y,
+				p.getX(),
+				p.getY(),
+				to.getP().x,
+				to.getP().y
+		);
+		g2d.draw(qc2d);
+
+		t.setToIdentity();
+		double arrowAngle = Math.atan2(p.getY() - to.getP().y, p.getX() - to.getP().x);
+		t.translate(to.getP().x, to.getP().y);
+		t.rotate(angle - Math.PI/2 - Math.PI/12);
+		Point2D p1 = new Point(-5,-20);
+		Point2D p2 = new Point(0,-10);
+		Point2D p3 = new Point(5,-20);
+		t.transform(p1, p1);
+		t.transform(p2, p2);
+		t.transform(p3, p3);
+		g.fillPolygon(
+				new int[]{
+						(int)p1.getX(),
+						(int)p2.getX(),
+						(int)p3.getX()
+				},
+				new int[]{
+						(int) p1.getY(),
+						(int) p2.getY(),
+						(int) p3.getY()
+				},
+				3
+		);
+
+		g.drawString(String.format("{%s/%s}", this.capacity, this.flow), (int)p.getX(), (int)p.getY());
 	}
 
-	private final GraphicVertex from;
-	private final GraphicVertex to;
-	private int capacity;
-	private int flow;
+	public void updatePosition(Point d) {
+		from.getP().x += d.x;
+		from.getP().y += d.y;
+		to.getP().x += d.x;
+		to.getP().y += d.y;
+	}
+
+	public GraphicVertex getFrom() {
+		return from;
+	}
+
+	public GraphicVertex getTo() {
+		return to;
+	}
+
+	public int getCapacity() {
+		return capacity;
+	}
+
+	public int getFlow() {
+		return flow;
+	}
+
 }

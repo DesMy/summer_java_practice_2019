@@ -1,162 +1,215 @@
 package controller;
 
-import model.Edge;
-import model.Graph;
-import model.Vertex;
-import model.FordFulkerson;
-import ui.Frame;
-import ui.GraphicEdge;
-import ui.GraphicVertex;
-
-
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Map;
+
+import ui.Frame;
+import model.Graph;
+import model.FordFulkerson;
+import ui.GraphicVertex;
 
 public class Controller
 {
     private Frame ui;
-    private ArrayList<Graph> graphs;
+    private Graph graph;
+    private ArrayList<Graph> conditions;
     private int currentGraph;
-    private int[][] map;
-    private char source;
-    private char sink;
-
 
     public Controller() {
         ui = new Frame(this);
         ui.setVisible(true);
-        graphs = new ArrayList<>();
-        currentGraph = -1;
-        map = new int[10][10];
+        conditions = new ArrayList<>();
+        currentGraph = 0;
     }
 
-    public void initGraph(ArrayList<String> input) {
-        Graph graph = new Graph(this);
-        source = input.get(0).charAt(0);
-        sink = input.get(1).charAt(0);
-        input.remove(0);
-        input.remove(0);
-        for(String str : input) {
-            String[] arr = str.split(" ");
-            graph.addPair(arr[0].charAt(0), arr[1].charAt(0), Integer.parseInt(arr[2]));
+    public void restoreGraph() {
+        if(conditions.size() > 0) {
+            graph = new Graph(conditions.get(0));
+            conditions.clear();
+            currentGraph = 0;
+            ui.clearPanel();
+            drawGraph(graph);
         }
-        graphs.add(graph);
-        ++currentGraph;
-        initMap();
-        drawCurrentGraph();
     }
 
-    public void initMap() {
-        Graph graph = graphs.get(currentGraph);
-        for(int i=0; i<graph.getVertices().size(); ++i) {
-            int randx = (int) (Math.random() * 10);
-            int randy = (int) (Math.random() * 10);
-            while(map[randx][randy] == 1) {
-                randx = (int) (Math.random() * 10);
-                randy = (int) (Math.random() * 10);
+    public void addVertex(char name, Point p) {
+        graph.addVertex(name);
+        ui.addVertex(new GraphicVertex(name, p));
+    }
+
+    public void addEdge(char from, char to, int capacity, int flow) {
+        graph.addEdge(from, to, capacity, flow);
+        ui.addEdge(from, to, capacity, flow);
+    }
+
+    public void deleteVertex(char name) {
+        graph.deleteVertex(name);
+        ui.deleteVertex(name);
+    }
+
+    public void deleteEdge(char from, char to) {
+        graph.deleteEdge(from, to);
+        ui.deleteEdge(from, to);
+    }
+
+    public void makeGraph(String str) {
+        String[] arr = str.split(System.getProperty("line.separator"));
+        char source = arr[0].charAt(0);
+        char sink = arr[1].charAt(0);
+        graph = new Graph(source, sink);
+
+        for(int i=2; i<arr.length; ++i) {
+            String[] cur = arr[i].split(" ");
+            graph.addEdge(cur[0].charAt(0), cur[1].charAt(0), Integer.parseInt(cur[2]), 0);
+        }
+
+        drawGraph(graph);
+    }
+
+    public void randomGraph() {
+        ArrayList<Character> vertices = new ArrayList<>();
+        char source = 'A';
+        char sink = 'B';
+        vertices.add(source);
+        vertices.add(sink);
+        graph = new Graph(source, sink);
+
+        for(int i=67; i!=123; ++i) {
+            if(i>=91 && i<=96) continue;
+            if(Math.random()<0.2) {
+                vertices.add((char)i);
             }
-            map[randx][randy] = 1;
         }
+
+        int nWays = (int)(Math.random()*vertices.size()+1);
+        ArrayList<String> ways = new ArrayList<>(nWays);
+        for(int i=0; i<nWays; ++i) {
+            StringBuilder str = new StringBuilder();
+            str.append(vertices.get(0));
+            for(int l=2; l<(int)(Math.random()*(vertices.size()-1)); ++l) {
+                if(Math.random()<0.5) str.append(vertices.get(l));
+            }
+            str.append(vertices.get(1));
+            ways.add(str.toString());
+        }
+
+        for(String way : ways) {
+            for(int i=0; i<way.length()-1; ++i) {
+                graph.addEdge(way.charAt(i), way.charAt(i+1), (int)(Math.random()*100), 0);
+            }
+        }
+
+        drawGraph(graph);
     }
 
-    public void drawCurrentGraph() {
+    public void reset() {
         ui.clearPanel();
-        Graph graph = graphs.get(currentGraph);
-        ArrayList<GraphicVertex> gv = new ArrayList<>();
-        ArrayList<GraphicEdge> ge = new ArrayList<>();
-        for(Vertex v : graph.getVertices()) {
-            int i = 0;
-            int j = 0;
-            Founded:
-            for(i=0; i<10; ++i) {
-                for(j=0; j<10; ++j) {
-                    if(map[i][j] == 1) {
-                        map[i][j] = 2;
-                        break Founded;
-                    }
-                }
-            }
-            gv.add(new GraphicVertex(v.name(), new Point(95*i+10, 30*j+10)));
-            ui.addElement(gv.get(gv.size()-1));
-        }
-        for(int i=0; i<gv.size(); ++i) {
-            for(Edge e : graph.getVertices().get(i).outEdges()) {
-                for(GraphicVertex ver : gv) {
-                    if(ver.name() == e.dest().name()) {
-                        if(e.dest().isEdge(ver.name())) {
-
-                        } else {
-                            ge.add(new GraphicEdge(gv.get(i), ver, e.getCapacity(), e.getFlow()));
-                            ui.addElement(ge.get(ge.size()-1));
-                        }
-                        break;
-                    }
-                }
-
-            }
-        }
+        conditions.clear();
+        currentGraph = 0;
+        graph = null;
         ui.repaint();
-        Founded:
-        for(int i=0; i<10; ++i) {
-            for(int j=0; j<10; ++j) {
-                if(map[i][j] == 2) {
-                    map[i][j] = 1;
-                    break Founded;
-                }
-            }
-        }
     }
 
-    public void copyGraph(Graph graph) {
-        Graph newGraph = new Graph();
-        for(Vertex v : graph.getVertices()) {
-            for(Edge e : v.outEdges()) {
-                newGraph.addPair(v.name(), e.dest().name(), e.getCapacity()+e.getFlow());
-                for(Vertex nv : newGraph.getVertices()) {
-                    for(Edge ne : nv.outEdges()) {
-                        if(nv.name() == v.name() && ne.dest().name() == e.dest().name()) {
-                            ne.changeCapacity(e.getFlow());
-                        }
-                    }
-                }
+    private void drawGraph(Graph graph) {
+        int j = 0;
+        String[] s = graph.toString().split(System.getProperty("line.separator"));
+        ArrayList<GraphicVertex> vrt = new ArrayList<>();
+        for(GraphicVertex v : ui.getVertices()) {
+            vrt.add(new GraphicVertex(v.getName(), v.getP()));
+        }
+
+        ui.clearPanel();
+
+        if(vrt.isEmpty()) {
+            ArrayList<Point> coord = new ArrayList<>();
+            int r = 150, n = graph.getVertices().size();
+            for (int i = 0; i < n; i++) {
+                int x = 475 + (int)(r * Math.cos(2*Math.PI/n*i));
+                int y = 200 + (int)(r* Math.sin(2*Math.PI/n*i));
+                coord.add(new Point(x,y));
+            }
+            for(; j < s.length && s[j].length() == 1; j++) {
+                ui.addVertex(new GraphicVertex(s[j].charAt(0), coord.get(j)));
+            }
+        } else {
+            j = vrt.size();
+            for(GraphicVertex gv: vrt) {
+                ui.addVertex(gv);
             }
         }
-        graphs.add(newGraph);
+
+        for(;j < s.length && s[j].length() > 1; j++) {
+            String[] temp = s[j].split(" ");
+            ui.addEdge(temp[0].charAt(0), temp[1].charAt(0), Integer.parseInt(temp[2]), Integer.parseInt(temp[3]));
+        }
+
+        ui.repaint();
     }
 
-    public int stepForward(){
-        if(graphs.size() == 1) {
-            FordFulkerson.process(graphs.get(0), source, sink);
-            ++currentGraph;
+    private void copyGraph() {
+        Graph newGraph = new Graph(graph);
+        conditions.add(newGraph);
+    }
+
+    public int toStart() {
+        if (graph == null) {
+            return -1;
         }
-        if(currentGraph == graphs.size() - 1) {
-
-            int process = FordFulkerson.process(graphs.get(1), source, sink);
-            currentGraph = 1;
-            drawCurrentGraph();
-            currentGraph = graphs.size() - 1;
-            return process;
+        if (conditions.isEmpty()) {
+            initFordFulkerson();
         }
-
-        ++currentGraph;
-        drawCurrentGraph();
-
+        currentGraph = 0;
+        drawGraph(conditions.get(currentGraph));
         return 0;
     }
 
-    public void stepBack(){
-        if (currentGraph <= 1) {
-            return;
+    public int toEnd() {
+        if (graph == null) {
+            return -1;
         }
-        --currentGraph;
-        drawCurrentGraph();
+        if (conditions.isEmpty()) {
+            initFordFulkerson();
+        }
+        currentGraph = conditions.size() - 1;
+        drawGraph(conditions.get(currentGraph));
+        return conditions.get(currentGraph).getFlow();
     }
 
-    public int runFordFulkerson() {
-        int process = FordFulkerson.process(graphs.get(currentGraph), source, sink);
-        drawCurrentGraph();
+    public int stepForward(){
+        if (graph == null) {
+            return -1;
+        }
+        if (conditions.isEmpty()) {
+            initFordFulkerson();
+        }
+        if (currentGraph == conditions.size() - 1) {
+            return conditions.get(conditions.size() - 1).getFlow();
+        }
+        currentGraph ++;
+        drawGraph(conditions.get(currentGraph));
+        return conditions.get(currentGraph).getFlow();
+    }
 
-        return process;
+    public int stepBack(){
+        if (graph == null) {
+            return -1;
+        }
+        if (conditions.isEmpty()) {
+            initFordFulkerson();
+        }
+        if (currentGraph == 0) {
+            return 0;
+        }
+        --currentGraph;
+        drawGraph(conditions.get(currentGraph));
+        return conditions.get(currentGraph).getFlow();
+    }
+
+    private void initFordFulkerson() {
+        int flow;
+        do {
+            copyGraph();
+            flow = FordFulkerson.step(graph);
+        } while (flow != 0);
     }
 }
